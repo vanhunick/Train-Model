@@ -6,10 +6,23 @@ package Stations with SPARK_Mode => on is
    type Station is private;
 
    -- Creates the station
-   function Create(Station_ID : in Natural; Out_T : in Track_List; In_T : in Track_List)return Station;
+   function Create(Station_ID : in Natural)return Station with
+   post => Get_ID(Create'Result) = Station_ID;
 
    -- Returns the ID of the station
    function Get_ID(A_Station : Station)return Natural;
+
+   procedure Add_Inbound(A_Station : in out Station; A_Track : in Track) with
+     pre => Add_Inbound_check(A_Station, A_Track) = True;
+
+   procedure Add_Outbound(A_Station : in out Station; A_Track : in Track) with
+     pre => Add_Outbound_check(A_Station, A_Track) = True;
+
+   function Add_Inbound_Check(A_Station : in Station; A_Track : in Track)return Boolean;
+
+   function Add_Outbound_Check(A_Station : in Station; A_Track : in Track)return Boolean;
+
+
 
 private
    type Station is

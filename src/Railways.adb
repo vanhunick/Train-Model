@@ -5,23 +5,31 @@ with Tracks; use Tracks;
 with Trains; use Trains;
 with Stations; use Stations;
 
-package Railways with SPARK_Mode => on is
+package body Railways with SPARK_Mode => on is
 
-   Type Railway is private;
 
-   function Create return Railway;
 
-   procedure start(A_Railway : in Railway) with
-     Pre => Get_Started(A_Railway) = False and then Check_Reachability(A_Railway) = True,
-     post => Get_Started(A_Railway) = True;
-
-   -- Moves a train
-   procedure Move_Train(A_Railway : in Railway; ID : Natural)with
-   pre => Valid_Train_ID(A_Railway, ID) and then Get_Started(A_Railway) = True and then Check_Collision(A_Railway,ID);
+   function Create return Railway is
+      New_Railway : Railway;
+   begin
+      New_Railway.All_Tracks := Track_Lists.Create;
+      New_Railway.All_Trains := Train_Lists.Create;
+      New_Railway.All_Stations := Station_Lists.Create;
+      return New_Railway;
+   end Create;
 
 
    -- Add inbound track to station
-   procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);
+   procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track) is
+   begin
+       for I in 1.. Station_Lists.Get_Count(A_Railway.All_Stations) loop
+         if  A_Railway.All_Stations(I) = Station_ID then -- Here we have found the station to add the track to
+            Stations.Add_Inbound(A_Railway.All_Stations(I), Add_Track); -- Add the inbound track to the Station
+            return;
+         end if;
+      end loop;
+   end Add_Inbound;
+
 
    -- Add outbound track to station
    procedure Add_Outbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);
@@ -35,31 +43,18 @@ package Railways with SPARK_Mode => on is
    pre => Valid_Track_ID(A_Railway, Get_ID(A_Track)) = False;
 
 
-   -- Adds a train to the Railway
+   -- Add train
    procedure Add_Train(A_Railway : in out Railway; A_Train : in Train) with
    pre => Valid_Train_ID(A_Railway, Get_ID(A_Train)) = False;
 
    -- Checks if everything is still reachable after adding a track
    function Check_Reachability(A_Railway : Railway)return Boolean;
 
+   procedure Move_Train(A_Railway : in Railway; ID : Natural)with
+   pre => Valid_Train_ID(A_Railway, ID);
 
 
    -- Returns if the passed in ID is allowed to be used
    function Valid_Train_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
    function Valid_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
    function Valid_Track_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
-
-   function Get_Started(A_Railway : in Railway)return Boolean;
-
-   function Check_Collision(A_Railway : in Railway; ID : in Natural)return Boolean with
-   pre => Valid_Train_ID(A_Railway, ID);
-
-private
-   type Railway is
-      record
-         Started : Boolean;
-         All_Tracks : Track_List;
-         All_Stations : Station_List;
-         All_Trains : Train_List;
-      end record;
-end Railways;
