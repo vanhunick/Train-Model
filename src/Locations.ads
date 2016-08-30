@@ -1,8 +1,8 @@
-package Location with SPARK_Mode => on is
+package Locations with SPARK_Mode => on is
 
-   type Locations is (
+   type Location is (
                       TRACK,
                       STATION,
                       OTHER
                      );
-end Location;
+end Locations;

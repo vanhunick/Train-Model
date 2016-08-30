@@ -1,4 +1,4 @@
-with Location; use Location;
+with Locations; use Locations;
 
 package Trains with SPARK_Mode => on is
 
@@ -6,17 +6,21 @@ package Trains with SPARK_Mode => on is
    type Train is private;
 
    -- Creates an instance of the pump type and returns it
-   function Create(ID : in Integer)return Train with
-     Post => Get_Fuel_Type(Create'Result) = Fuel; -- Checks the correct fuel type assigned
+   function Create(ID : in Natural)return Train with
+   Post => Get_ID(Create'Result) = ID; -- Checks the correct ID set
 
-   procedure Update_Location(A_Train : in out Train; Loc : in Location; ID : in Integer);
+   procedure Update_Location(A_Train : in out Train; Loc : in Location; ID : in Natural);
 
+   procedure Set_Destination(A_Train : in out Train; ID : in Natural); -- Need to make sure the id is a station
+
+   function Get_ID(A_Train : in Train)return Natural;
 
 private
    type Train is
       record
-         ID : Integer;
+         Destination : Natural;
+         ID : Natural;
          Cur_Location_Type : Location;
-         Cur_Location_ID : Integer;
+         Cur_Location_ID : Natural;
       end record;
 end Trains;
