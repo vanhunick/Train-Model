@@ -19,11 +19,11 @@ package Station_Lists with SPARK_Mode => on is
 
    function Get_Max(A_Station_List : in Station_List)return Integer;
 
-   function Get_Station(A_Station_List : in Station_List; ID : in Natural)return Station;
+   function Get_Station(A_Station_List : in Station_List; ID : in Natural)return Station with
+     pre => Contains_Station(A_Station_List,ID),
+     post => Get_ID(Get_Station'Result) = ID;
 
    function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean;
-
-
 
    private
    type Station_List is

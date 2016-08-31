@@ -19,9 +19,11 @@ package Train_Lists with SPARK_Mode => on is
 
    function Get_Max(A_Train_List : in Train_List)return Integer;
 
-   function Get_Train(A_Train_List : in Train_List; ID : in Natural)return Train;
+   function Get_Train(A_Train_List : in Train_List; ID : in Natural)return Train with
+     pre => Contains_Train(A_Train_List,ID),
+     post => Get_ID(Get_Train'Result) = ID;
 
-   function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Train;
+   function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean;
 
 
    private

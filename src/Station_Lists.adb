@@ -7,7 +7,7 @@ package body Station_Lists with SPARK_Mode => on is
       New_List : Station_List;
    begin
          New_List.Count := 0;
-         New_List.Max := 10000;
+         New_List.Max := 1000;
          return New_List;
    end Create;
 
@@ -15,6 +15,7 @@ package body Station_Lists with SPARK_Mode => on is
    procedure Add_Station(A_Station_List : in out Station_List; A_Station : in Station) is
    begin
       A_Station_List.Stations(A_Station_List.Count+1) := A_Station;
+      A_Station_List.Count := A_Station_List.Count+1;
    end Add_Station;
 
    function Get_Count(A_Station_List : in Station_List)return Integer is (A_Station_List.Count);

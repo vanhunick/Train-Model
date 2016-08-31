@@ -32,7 +32,7 @@ package body Train_Lists with SPARK_Mode => on is
    end Get_Train;
 
 
-   function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Train is
+   function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean is
    begin
       for I in 1.. Get_Count(A_Train_List) loop
          if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to

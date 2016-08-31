@@ -19,7 +19,10 @@ package Track_Lists with SPARK_Mode => on is
 
    function Get_Max(A_Track_List : in Track_List)return Integer;
 
-   function Get_Track(A_Track_List : in Track_List; ID : in Natural)return Track;
+   function Get_Track(A_Track_List : in Track_List; ID : in Natural)return Track with
+     pre => Contains_Track(A_Track_List,ID),
+     post => Get_ID(Get_Track'Result) = ID;
+
 
    function Contains_Track(A_Track_List : in Track_List; ID : in Natural)return Boolean;
 
