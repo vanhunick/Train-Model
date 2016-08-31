@@ -21,4 +21,25 @@ package body Train_Lists with SPARK_Mode => on is
 
    function Get_Max(A_Train_List : in Train_List)return Integer is (A_Train_List.Max);
 
+   function Get_Train(A_Train_List : in Train_List; ID : in Natural)return Train is
+      begin
+      for I in 1.. Get_Count(A_Train_List) loop
+         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to
+            return A_Train_List.Trains(I);
+         end if;
+      end loop;
+      return A_Train_List.Trains(1); -- Should never get here
+   end Get_Train;
+
+
+   function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Train is
+   begin
+      for I in 1.. Get_Count(A_Train_List) loop
+         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to
+            return True;
+         end if;
+      end loop;
+      return False; -- Should never get here
+   end Contains_Train;
+
 end Train_Lists;

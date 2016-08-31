@@ -11,14 +11,13 @@ package Railways with SPARK_Mode => on is
 
    function Create return Railway;
 
-   procedure start(A_Railway : in Railway) with
+   procedure start(A_Railway : in out Railway) with
      Pre => Get_Started(A_Railway) = False and then Check_Reachability(A_Railway) = True,
      post => Get_Started(A_Railway) = True;
 
    -- Moves a train
    procedure Move_Train(A_Railway : in Railway; ID : Natural)with
    pre => Valid_Train_ID(A_Railway, ID) and then Get_Started(A_Railway) = True and then Check_Collision(A_Railway,ID);
-
 
    -- Add inbound track to station
    procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);

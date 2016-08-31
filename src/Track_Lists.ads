@@ -19,6 +19,12 @@ package Track_Lists with SPARK_Mode => on is
 
    function Get_Max(A_Track_List : in Track_List)return Integer;
 
+   function Get_Track(A_Track_List : in Track_List; ID : in Natural)return Track;
+
+   function Contains_Track(A_Track_List : in Track_List; ID : in Natural)return Boolean;
+
+
+
    private
    type Track_List is
       record
