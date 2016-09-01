@@ -7,7 +7,7 @@ package body Station_Lists with SPARK_Mode => on is
       New_List : Station_List;
    begin
          New_List.Count := 0;
-         New_List.Max := 1000;
+         New_List.Max := 100;
          return New_List;
    end Create;
 

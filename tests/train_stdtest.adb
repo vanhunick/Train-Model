@@ -1,6 +1,12 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with AUnit.Assertions; use AUnit.Assertions;
 with Tracks; use Tracks;
+with Train_Lists;
+with Track_Lists;
+with Station_Lists;
+with Stations; use Stations;
+with Trains; use Trains;
+with Locations; use Locations;
 
 package body Train_stdtest is
 
@@ -38,24 +44,13 @@ package body Train_stdtest is
    --                 TEST CASES/SCENARIOS
    -- ===========================================================
 
-   -- Makes sure the user cannot pump at it's initial state
-   procedure Test_Pump_Initial(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
-      Condition1 : Boolean;
-   begin
-
-      Condition1 := True;
-
-      Assert (Condition => (Condition1 = True),
-              Message => "Should not be able to pump in base state");
-   end Test_Pump_Initial;
 
    -- ===========================================================
    --                 Tracks Package tested Induvidually
    -- ============================================================
 
-      -- Makes sure the user cannot pump at it's initial state
    procedure Test_Create_Track(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
-      A_Track : Track;
+      A_Track : Tracks.Track;
    begin
 
       A_Track := Create(1,2,3);
@@ -72,8 +67,8 @@ package body Train_stdtest is
 
    -- Creates two different Tracks and checks they are set to different values
    procedure Test_Create_Track_Two(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
-      A_Track : Track;
-      B_Track : Track;
+      A_Track : Tracks.Track;
+      B_Track : Tracks.Track;
    begin
 
       A_Track := Create(1,2,3);
@@ -98,16 +93,240 @@ package body Train_stdtest is
               Message => "Origin of the track B should be set to 6");
    end Test_Create_Track_Two;
 
+   -- ===========================================================
+   --                 Lists Packages tested Induvidually
+   -- ============================================================
+
+   procedure Test_Create_Train_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Train_Lists.Train_List;
+   begin
+      A_List := Train_Lists.Create;
+
+      Assert (Condition => (Train_Lists.Get_Count(A_List) = 0),
+              Message => "The count of the List should be 0");
+   end Test_Create_Train_List;
+
+   procedure Test_Create_Track_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Track_Lists.Track_List;
+   begin
+      A_List := Track_Lists.Create;
+
+      Assert (Condition => (Track_Lists.Get_Count(A_List) = 0),
+              Message => "The count of the List should be 0");
+   end Test_Create_Track_List;
+
+   procedure Test_Create_Station_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Station_Lists.Station_List;
+   begin
+      A_List := Station_Lists.Create;
+
+      Assert (Condition => (Station_Lists.Get_Count(A_List) = 0),
+              Message => "The count of the List should be 0");
+   end Test_Create_Station_List;
+
+
+      procedure Test_Add_Station_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Station_Lists.Station_List;
+      A_Station : Stations.Station;
+   begin
+      A_Station := Create(1);
+      A_List := Station_Lists.Create;
+      Station_Lists.Add_Station(A_List,A_Station);
+
+      Assert (Condition => (Station_Lists.Get_Count(A_List) = 1),
+              Message => "The count of the List should be 1 after adding station");
+   end Test_Add_Station_List;
+
+   procedure Test_Add_Track_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Track_Lists.Track_List;
+      A_Track : Tracks.Track;
+   begin
+      A_Track := Create(1,1,1);
+      A_List := Track_Lists.Create;
+      Track_Lists.Add_Track(A_List,A_Track);
+
+      Assert (Condition => (Track_Lists.Get_Count(A_List) = 1),
+              Message => "The count of the List should be 1 after adding Track");
+   end Test_Add_Track_List;
+
+   procedure Test_Add_Train_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Train_Lists.Train_List;
+      A_Train : Trains.Train;
+   begin
+      A_Train := Create(1);
+      A_List := Train_Lists.Create;
+      Train_Lists.Add_Train(A_List,A_Train);
+
+      Assert (Condition => (Train_Lists.Get_Count(A_List) = 1),
+              Message => "The count of the List should be 1 after adding Train");
+   end Test_Add_Train_List;
+
+   procedure Test_Contains_Train_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Train_Lists.Train_List;
+      A_Train : Trains.Train;
+   begin
+      A_Train := Create(1);
+      A_List := Train_Lists.Create;
+      Train_Lists.Add_Train(A_List,A_Train);
+
+      Assert (Condition => (Train_Lists.Contains_Train(A_List,1)),
+              Message => "The list should contain the train with ID 1");
+
+      Assert (Condition => ( not Train_Lists.Contains_Train(A_List,2)),
+              Message => "The list should not contain the train with ID 2");
+   end Test_Contains_Train_List;
+
+
+   procedure Test_Contains_Track_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Track_Lists.Track_List;
+      A_Track : Tracks.Track;
+   begin
+      A_Track := Create(1,1,1);
+      A_List := Track_Lists.Create;
+      Track_Lists.Add_Track(A_List,A_Track);
+
+      Assert (Condition => (Track_Lists.Contains_Track(A_List,1)),
+              Message => "The list should contain the Track with ID 1");
+
+      Assert (Condition => ( not Track_Lists.Contains_Track(A_List,2)),
+              Message => "The list should not contain the Track with ID 2");
+   end Test_Contains_Track_List;
+
+   procedure Test_Contains_Station_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Station_Lists.Station_List;
+      A_Station : Stations.Station;
+   begin
+      A_Station := Create(1);
+      A_List := Station_Lists.Create;
+      Station_Lists.Add_Station(A_List,A_Station);
+
+      Assert (Condition => (Station_Lists.Contains_Station(A_List,1)),
+              Message => "The list should contain the Station with ID 1");
+
+      Assert (Condition => ( not Station_Lists.Contains_Station(A_List,2)),
+              Message => "The list should not contain the Station with ID 2");
+   end Test_Contains_Station_List;
+
+   procedure Test_Get_Station_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Station_Lists.Station_List;
+      A_Station : Stations.Station;
+   begin
+      A_Station := Create(1);
+      A_List := Station_Lists.Create;
+      Station_Lists.Add_Station(A_List,A_Station);
+
+      Assert (Condition => (Get_ID(Station_Lists.Get_Station(A_List,1)) = 1),
+              Message => "The list should contain the Station with ID 1");
+   end Test_Get_Station_List;
+
+   procedure Test_Get_Track_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Track_Lists.Track_List;
+      A_Track : Tracks.Track;
+   begin
+      A_Track := Create(1,1,1);
+      A_List := Track_Lists.Create;
+      Track_Lists.Add_Track(A_List,A_Track);
+
+      Assert (Condition => (Get_ID(Track_Lists.Get_Track(A_List,1)) = 1),
+              Message => "The list should contain the Track with ID 1");
+   end Test_Get_Track_List;
+
+   procedure Test_Get_Train_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_List : Train_Lists.Train_List;
+      A_Train : Trains.Train;
+   begin
+      A_Train := Create(1);
+      A_List := Train_Lists.Create;
+      Train_Lists.Add_Train(A_List,A_Train);
+
+      Assert (Condition => (Get_ID(Train_Lists.Get_Train(A_List,1)) = 1),
+              Message => "The list should contain the Train with ID 1");
+   end Test_Get_Train_List;
+
+
+   -- ===========================================================
+   --                 Train Packages tested Induvidually
+   -- ============================================================
+
+   procedure Test_Train_Create(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Train : Trains.Train;
+   begin
+      A_Train := Create(1);
+
+      Assert (Condition => (Get_ID(A_Train) = 1),
+              Message => "The Train should be created with ID 1");
+
+      Assert (Condition => (Get_Destination(A_Train) = 0),
+              Message => "The Train should be created with ID 1");
+
+      Assert (Condition => (Get_Location_Type(A_Train) = OTHER),
+              Message => "The Train should have default location type of OTHER");
+
+      Assert (Condition => (Get_Destination(A_Train) = 0),
+              Message => "The Train should have default destination of 0");
+
+   end Test_Train_Create;
+
+
+   procedure Test_Train_Update_Location(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Train : Trains.Train;
+   begin
+      A_Train := Create(1);
+      Trains.Update_Location(A_Train,Locations.TRACK,2);
+
+      Assert (Condition => (Get_Location_Type(A_Train) = Locations.TRACK),
+              Message => "The Train should have TRACK as its location Type");
+
+      Assert (Condition => (Get_Location(A_Train) = 2),
+              Message => "The Train should be on track with ID 2");
+   end Test_Train_Update_Location;
+
+   procedure Test_Train_Set_Destination(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Train : Trains.Train;
+   begin
+      A_Train := Create(1);
+      Trains.Set_Destination(A_Train,2);
+
+      Assert (Condition => (Get_Destination(A_Train) = 2),
+              Message => "The Train should have destination of ID 2");
+
+   end Test_Train_Set_Destination;
 
 
    procedure Register_Tests (T: in out TC) is
       use AUnit.Test_Cases.Registration;
    begin
-      Register_Routine (Test => T,Routine => Test_Pump_Initial'Access, Name => "Test_Pump_Initial");
-
       Register_Routine (Test => T,Routine => Test_Create_Track'Access, Name => "Test_Create_Track");
 
       Register_Routine (Test => T,Routine => Test_Create_Track_Two'Access, Name => "Test_Create_Track_Two");
+
+      Register_Routine (Test => T,Routine => Test_Create_Train_List'Access, Name => "Test_Create_Train_List");
+
+      Register_Routine (Test => T,Routine => Test_Create_Track_List'Access, Name => "Test_Create_Track_List");
+
+      Register_Routine (Test => T,Routine => Test_Create_Station_List'Access, Name => "Test_Create_Station_List");
+
+      Register_Routine (Test => T,Routine => Test_Add_Station_List'Access, Name => "Test_Add_Station_List");
+
+      Register_Routine (Test => T,Routine => Test_Add_Train_List'Access, Name => "Test_Add_Train_List");
+
+      Register_Routine (Test => T,Routine => Test_Add_Track_List'Access, Name => "Test_Add_Track_List");
+
+      Register_Routine (Test => T,Routine => Test_Contains_Train_List'Access, Name => "Test_Contains_Train_List");
+
+      Register_Routine (Test => T,Routine => Test_Contains_Track_List'Access, Name => "Test_Contains_Track_List");
+
+      Register_Routine (Test => T,Routine => Test_Contains_Station_List'Access, Name => "Test_Contains_Station_List");
+
+      Register_Routine (Test => T,Routine => Test_Get_Station_List'Access, Name => "Test_Get_Station_List");
+
+      Register_Routine (Test => T,Routine => Test_Get_Track_List'Access, Name => "Test_Get_Track_List");
+
+      Register_Routine (Test => T,Routine => Test_Train_Create'Access, Name => "Test_Train_Create");
+
+      Register_Routine (Test => T,Routine => Test_Train_Update_Location'Access, Name => "Test_Train_Update_Location");
+
+      Register_Routine (Test => T,Routine => Test_Train_Set_Destination'Access, Name => "Test_Train_Set_Destination");
 
 
    end Register_Tests;

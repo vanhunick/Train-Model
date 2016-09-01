@@ -5,7 +5,7 @@ package Train_Lists with SPARK_Mode => on is
    Type Train_List is private;
 
    -- The underlying array of Trains
-   type Train_Array is array (Positive range 1..10000) of Train;
+   type Train_Array is array (Positive range 1..100) of Train;
 
    -- Creates and returns an empty Train list
    function Create return Train_List;

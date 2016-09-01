@@ -15,6 +15,12 @@ package Trains with SPARK_Mode => on is
 
    function Get_ID(A_Train : in Train)return Natural;
 
+   function Get_Location(A_Train : in Train)return Natural;
+
+   function Get_Location_Type(A_Train : in Train)return Location;
+
+   function Get_Destination(A_Train : in Train)return Natural;
+
 private
    type Train is
       record

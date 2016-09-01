@@ -5,7 +5,7 @@ package Track_Lists with SPARK_Mode => on is
    Type Track_List is private;
 
    -- The underlying array of tracks
-   type Track_Array is array (Positive range 1..10000) of Track;
+   type Track_Array is array (Positive range 1..100) of Track;
 
    -- Creates and returns an empty track list
    function Create return Track_List;

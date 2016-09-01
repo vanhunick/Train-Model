@@ -7,7 +7,7 @@ package body Track_Lists with SPARK_Mode => on is
       New_List : Track_List;
    begin
          New_List.Count := 0;
-         New_List.Max := 10000;
+         New_List.Max := 100;
          return New_List;
    end Create;
 
@@ -15,6 +15,7 @@ package body Track_Lists with SPARK_Mode => on is
    procedure Add_Track(A_Track_List : in out Track_List; A_Track : in Track) is
    begin
       A_Track_List.Tracks(A_Track_List.Count+1) := A_Track;
+      A_Track_List.Count := A_Track_List.Count + 1;
    end Add_Track;
 
    function Get_Count(A_Track_List : in Track_List)return Integer is (A_Track_List.Count);

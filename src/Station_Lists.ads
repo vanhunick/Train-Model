@@ -5,7 +5,7 @@ package Station_Lists with SPARK_Mode => on is
    Type Station_List is private;
 
    -- The underlying array of Stations
-   type Station_Array is array (Positive range 1..1000) of Station;
+   type Station_Array is array (Positive range 1..100) of Station;
 
    -- Creates and returns an empty Station list
    function Create return Station_List;
