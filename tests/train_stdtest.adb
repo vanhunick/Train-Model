@@ -243,10 +243,35 @@ package body Train_stdtest is
               Message => "The list should contain the Train with ID 1");
    end Test_Get_Train_List;
 
+   -- Train list contains destination test
+
+   procedure Test_Train_List_On_Destination(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Train_List : Train_Lists.Train_List;
+      A_Train : Trains.Train;
+   begin
+      A_Train_List := Train_Lists.Create;
+      A_Train := Create(1);
+      Trains.Set_Destination(A_Train,2);
+      Trains.Update_Location(A_Train);
+      Trains.Update_Location(A_Train);
+      Train_Lists.Add_Train(A_Train_List, A_Train);
+
+
+
+      Assert (Condition => (Train_Lists.On_Destination(A_Train_List, 2) = True),
+              Message => "The List should contain a train with of ID 2");
+
+
+      Assert (Condition => (Train_Lists.On_Destination(A_Train_List, 1) = False),
+              Message => "The List should not contain a train with of ID 1");
+
+
+   end Test_Train_List_On_Destination;
+
 
    -- ===========================================================
    --                 Train Packages tested Induvidually
-   -- ============================================================
+   -- ===========================================================
 
    procedure Test_Train_Create(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_Train : Trains.Train;
@@ -272,10 +297,9 @@ package body Train_stdtest is
       A_Train : Trains.Train;
    begin
       A_Train := Create(1);
-      Trains.Update_Location(A_Train,Locations.TRACK,2);
+      Set_Destination(A_Train, 2);
+      Trains.Update_Location(A_Train);
 
-      Assert (Condition => (Get_Location_Type(A_Train) = Locations.TRACK),
-              Message => "The Train should have TRACK as its location Type");
 
       Assert (Condition => (Get_Location(A_Train) = 2),
               Message => "The Train should be on track with ID 2");
@@ -291,6 +315,42 @@ package body Train_stdtest is
               Message => "The Train should have destination of ID 2");
 
    end Test_Train_Set_Destination;
+
+
+
+   -- ===========================================================
+   --                 Station Packages tested Induvidually
+   -- ===========================================================
+
+
+   procedure Test_Create_Station(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Station : Stations.Station;
+   begin
+      A_Station := Create(1);
+
+      Assert (Condition => (Stations.Get_ID(A_Station) = 1),
+              Message => "The Station should have ID of 1");
+
+   end Test_Create_Station;
+
+
+--     procedure Test_Create_Station(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+--        A_Station : Stations.Station;
+--     begin
+--        A_Station := Create(1);
+--
+--        Assert (Condition => (Stations.Get_ID(A_Station) = 1),
+--                Message => "The Station should have ID of 1");
+--
+--     end Test_Create_Station;
+
+
+
+   -- ===========================================================
+   --                 Railway Packages tested Induvidually
+   -- ===========================================================
+
+
 
 
    procedure Register_Tests (T: in out TC) is
@@ -327,6 +387,11 @@ package body Train_stdtest is
       Register_Routine (Test => T,Routine => Test_Train_Update_Location'Access, Name => "Test_Train_Update_Location");
 
       Register_Routine (Test => T,Routine => Test_Train_Set_Destination'Access, Name => "Test_Train_Set_Destination");
+
+      Register_Routine (Test => T,Routine => Test_Create_Station'Access, Name => "Test_Create_Station");
+
+      Register_Routine (Test => T,Routine => Test_Train_List_On_Destination'Access, Name => "Test_Train_List_On_Destination");
+
 
 
    end Register_Tests;

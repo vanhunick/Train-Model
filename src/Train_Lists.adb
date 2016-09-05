@@ -43,4 +43,25 @@ package body Train_Lists with SPARK_Mode => on is
       return False;
    end Contains_Train;
 
+   function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean is
+   begin
+      for I in 1.. Get_Count(A_Train_List) loop
+         if  Get_Location(A_Train_List.Trains(I)) = Dest_ID then                  -- Here we have found the station to add the track to
+            return True;
+         end if;
+      end loop;
+      return False;
+   end On_Destination;
+
+
+   procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural) is
+   begin
+      for I in 1.. Get_Count(A_Train_List) loop
+         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to
+            Trains.Update_Location(A_Train_List.Trains(I));
+         end if;
+      end loop;
+   end Move_Train;
+
+
 end Train_Lists;

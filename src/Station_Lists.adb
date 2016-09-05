@@ -18,6 +18,27 @@ package body Station_Lists with SPARK_Mode => on is
       A_Station_List.Count := A_Station_List.Count+1;
    end Add_Station;
 
+   -- Add an inbound track to the station
+   procedure Add_Inbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track) is
+   begin
+      for I in 1.. Get_Count(A_Station_List) loop
+         if  Get_ID(A_Station_List.Stations(I)) = Station_ID then                  -- Here we have found the station to add the track to
+            Stations.Add_Inbound(A_Station_List.Stations(I), A_Track);
+         end if;
+      end loop;
+   end Add_Inbound;
+
+   -- Add an outbound track to the station
+   procedure Add_Outbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track) is
+   begin
+      for I in 1.. Get_Count(A_Station_List) loop
+         if  Get_ID(A_Station_List.Stations(I)) = Station_ID then                  -- Here we have found the station to add the track to
+            Stations.Add_Outbound(A_Station_List.Stations(I), A_Track);
+         end if;
+      end loop;
+   end Add_Outbound;
+
+
    function Get_Count(A_Station_List : in Station_List)return Integer is (A_Station_List.Count);
 
    function Get_Max(A_Station_List : in Station_List)return Integer is (A_Station_List.Max);

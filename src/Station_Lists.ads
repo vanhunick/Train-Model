@@ -1,4 +1,5 @@
 with Stations; use Stations;
+with Tracks; use Tracks;
 
 package Station_Lists with SPARK_Mode => on is
 
@@ -24,6 +25,13 @@ package Station_Lists with SPARK_Mode => on is
      post => Get_ID(Get_Station'Result) = ID;
 
    function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean;
+
+   procedure Add_Outbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track);
+
+   procedure Add_Inbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track);
+
+
+
 
    private
    type Station_List is

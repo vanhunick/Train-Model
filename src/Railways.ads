@@ -16,7 +16,7 @@ package Railways with SPARK_Mode => on is
      post => Get_Started(A_Railway) = True;
 
    -- Moves a train
-   procedure Move_Train(A_Railway : in Railway; ID : Natural)with
+   procedure Move_Train(A_Railway : in out Railway; ID : Natural)with
    pre => Valid_Train_ID(A_Railway, ID) and then Get_Started(A_Railway) = True and then Check_Collision(A_Railway,ID);
 
    -- Add inbound track to station

@@ -13,10 +13,10 @@ package body Trains is
    end Create;
 
    -- MIGHT CHANGE TO JUST UPDATE IT TO DESTINATION
-   procedure Update_Location(A_Train : in out Train; Loc : in Location; ID : in Natural) is
+   procedure Update_Location(A_Train : in out Train;) is
    begin
-      A_Train.Cur_Location_ID := ID;
-      A_Train.Cur_Location_Type :=Loc;
+      A_Train.Cur_Location_ID := A_Train.Destination;
+      -- MIGHT NEED TO UPDATE LOCATION TYPE TOO
    end Update_Location;
 
    procedure Set_Destination(A_Train : in out Train; ID : in Natural) is
@@ -31,9 +31,5 @@ package body Trains is
    function Get_Location_Type(A_Train : in Train)return Location is (A_Train.Cur_Location_Type);
 
    function Get_Destination(A_Train : in Train)return Natural is (A_Train.Destination);
-
-
-
-
 
 end Trains;

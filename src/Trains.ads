@@ -9,7 +9,7 @@ package Trains with SPARK_Mode => on is
    function Create(ID : in Natural)return Train with
    Post => Get_ID(Create'Result) = ID; -- Checks the correct ID set
 
-   procedure Update_Location(A_Train : in out Train; Loc : in Location; ID : in Natural);
+   procedure Update_Location(A_Train : in out Train);
 
    procedure Set_Destination(A_Train : in out Train; ID : in Natural); -- Need to make sure the id is a station
 

@@ -17,6 +17,7 @@ package body Railways with SPARK_Mode => on is
       return New_Railway;
    end Create;
 
+
    procedure Start(A_Railway : in out Railway) is
    begin
       A_Railway.Started := True;
@@ -25,9 +26,16 @@ package body Railways with SPARK_Mode => on is
 
    function Get_Started(A_Railway : in Railway)return Boolean is (A_Railway.Started);
 
+   -- Check if the train with the ID passed in will collide with something if it moves to its destination
    function Check_Collision(A_Railway : in Railway; ID : in Natural)return Boolean is
+      Destination : Natural;
    begin
-      return true;
+      Destination := Trains.Get_Destination(Train_Lists.Get_Train(A_Railway.All_Trains,ID));
+      if Train_Lists.On_Destination(A_Railway.All_Trains,Destination) then
+         return True;
+      else
+         return False;
+      end if;
    end Check_Collision;
 
 
@@ -35,24 +43,14 @@ package body Railways with SPARK_Mode => on is
    -- Add inbound track to station
    procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track) is
    begin
-       for I in 1.. Station_Lists.Get_Count(A_Railway.All_Stations) loop
-         if  A_Railway.All_Stations(I) = Station_ID then                  -- Here we have found the station to add the track to
-            Stations.Add_Inbound(A_Railway.All_Stations(I), A_Track);   -- Add the inbound track to the Station
-            return;
-         end if;
-      end loop;
+      Station_Lists.Add_Inbound(A_Railway.All_Stations, Station_ID,A_Track);
    end Add_Inbound;
 
 
    -- Add outbound track to station
    procedure Add_Outbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track) is
    begin
-       for I in 1.. Station_Lists.Get_Count(A_Railway.All_Stations) loop
-         if  A_Railway.All_Stations(I) = Station_ID then                   -- Here we have found the station to add the track to
-            Stations.Add_Outbound(A_Railway.All_Stations(I), A_Track);   -- Add the outbound track to the Station
-            return;
-         end if;
-      end loop;
+      Station_Lists.Add_Outbound(A_Railway.All_Stations, Station_ID,A_Track);
    end Add_Outbound;
 
 
@@ -84,47 +82,29 @@ package body Railways with SPARK_Mode => on is
 
 
    -- Moves a train to its destination
-   procedure Move_Train(A_Railway : in Railway; ID : Natural) is
+   procedure Move_Train(A_Railway : in out Railway; ID : Natural) is
    begin
-      for I in 1.. Train_Lists.Get_Count(A_Railway.All_Trains) loop
-         if  A_Railway.All_Trains(I) = ID then -- Found the train
-                                               -- Move it
-                                               null;
-         end if;
-      end loop;
+      Train_Lists.Move_Train(A_Railway.All_Trains, ID);
    end Move_Train;
 
 
    -- Returns if the Train ID exists in the railway
    function Valid_Train_ID(A_Railway : in Railway; ID : in Natural)return Boolean is
    begin
-      for I in 1.. Train_Lists.Get_Count(A_Railway.All_Trains) loop
-         if  A_Railway.All_Trains(I) = ID then return true;
-         end if;
-      end loop;
-      return False;
+      return Train_Lists.Contains_Train(A_Railway.All_Trains, ID);
    end Valid_Train_ID;
 
 
    -- Returns if the Station ID exists in the railway
    function Valid_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean is
    begin
-      for I in 1.. Station_Lists.Get_Count(A_Railway.All_Stations) loop
-         if  A_Railway.All_Stations(I) = ID then return true;
-         end if;
-      end loop;
-      return False;
+      return Station_Lists.Contains_Station(A_Railway.All_Stations, ID);
    end Valid_Station_ID;
-
 
    -- Returns if the Track ID exists in the railway
    function Valid_Track_ID(A_Railway : in Railway; ID : in Natural)return Boolean is
    begin
-      for I in 1.. Track_Lists.Get_Count(A_Railway.All_Tracks) loop
-         if  A_Railway.All_Tracks(I) = ID then return true;
-         end if;
-      end loop;
-      return False;
+      return Track_Lists.Contains_Track(A_Railway.All_Tracks, ID);
    end Valid_Track_ID;
 
 end Railways;

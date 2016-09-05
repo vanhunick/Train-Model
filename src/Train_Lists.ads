@@ -25,6 +25,11 @@ package Train_Lists with SPARK_Mode => on is
 
    function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean;
 
+   function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean;
+
+   procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural);
+
+
 
    private
    type Train_List is
