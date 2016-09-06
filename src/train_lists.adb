@@ -63,5 +63,8 @@ package body Train_Lists with SPARK_Mode => on is
       end loop;
    end Move_Train;
 
+   function Get_Train_Index(A_Train_List : in Train_List; Index : in Natural)return Train is (A_Train_List.Trains(Index));
+
+
 
 end Train_Lists;

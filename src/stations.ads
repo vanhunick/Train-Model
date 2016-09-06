@@ -25,7 +25,9 @@ package Stations with SPARK_Mode => on is
    procedure Add_Outbound(A_Station : in out Station; A_Track : in Track) with
      pre => Add_Outbound_check(A_Station, A_Track) = True;
 
-   function Add_Inbound_Check(A_Station : in Station; A_Track : in Track)return Boolean;
+   function Add_Inbound_Check(A_Station : in Station; A_Track : in Track)return Boolean with
+     Post => (if Add_Inbound_Check'Result then
+      (for all I in 1.. Get_Count(A_Station.In_Tracks) => Get_ID(Get_Track_Index(A_Station.In_Tracks,I)) /= Get_ID(A_Track)));
 
    function Add_Outbound_Check(A_Station : in Station; A_Track : in Track)return Boolean;
 
