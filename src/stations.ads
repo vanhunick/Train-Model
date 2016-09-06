@@ -3,7 +3,14 @@ with Track_Lists; use Track_Lists;
 
 package Stations with SPARK_Mode => on is
 
-   type Station is private;
+--   type Station is private;
+   type Station is
+      record
+         Out_Tracks : Track_List;
+         In_Tracks : Track_List;
+         ID : Natural;
+      end record;
+
 
    -- Creates the station
    function Create(Station_ID : in Natural)return Station with
@@ -24,13 +31,13 @@ package Stations with SPARK_Mode => on is
 
 
 
-private
-   type Station is
-      record
-         Out_Tracks : Track_List;
-         In_Tracks : Track_List;
-         ID : Natural;
-      end record;
+--  private
+--     type Station is
+--        record
+--           Out_Tracks : Track_List;
+--           In_Tracks : Track_List;
+--           ID : Natural;
+--        end record;
 end Stations;
 
 

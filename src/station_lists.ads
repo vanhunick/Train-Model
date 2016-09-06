@@ -30,6 +30,7 @@ package Station_Lists with SPARK_Mode => on is
 
    procedure Add_Inbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track);
 
+   function Get_Station_Index(A_Station_List : in Station_List; Index : in Natural)return Station;
 
 
 

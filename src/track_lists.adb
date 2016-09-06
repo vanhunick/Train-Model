@@ -32,6 +32,12 @@ package body Track_Lists with SPARK_Mode => on is
       return A_Track_List.Tracks(1); -- Should never get here
    end Get_Track;
 
+   function Get_Track_Index(A_Track_List : in Track_List; Index : in Natural)return Track is
+   begin
+      return A_Track_List.Tracks(Index);
+   end Get_Track_Index;
+
+
    function Contains_Track(A_Track_List : in Track_List; ID : in Natural)return Boolean is
    begin
       for I in 1.. Get_Count(A_Track_List) loop

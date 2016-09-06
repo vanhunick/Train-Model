@@ -9,6 +9,11 @@ package Railways with SPARK_Mode => on is
 
    Type Railway is private;
 
+   type Nat_Array is array (Positive range <>) of Natural;
+
+   type Station_Array is array (Positive range <>) of Station;
+
+
    function Create return Railway;
 
    procedure start(A_Railway : in out Railway) with
@@ -41,6 +46,8 @@ package Railways with SPARK_Mode => on is
    -- Checks if everything is still reachable after adding a track
    function Check_Reachability(A_Railway : Railway)return Boolean;
 
+   -- Helper function for Depth first search
+   function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean;
 
 
    -- Returns if the passed in ID is allowed to be used
@@ -51,7 +58,11 @@ package Railways with SPARK_Mode => on is
    function Get_Started(A_Railway : in Railway)return Boolean;
 
    function Check_Collision(A_Railway : in Railway; ID : in Natural)return Boolean with
-   pre => Valid_Train_ID(A_Railway, ID);
+     pre => Valid_Train_ID(A_Railway, ID);
+
+   function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean;
+
+
 
 private
    type Railway is

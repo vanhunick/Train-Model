@@ -23,6 +23,9 @@ package Track_Lists with SPARK_Mode => on is
      pre => Contains_Track(A_Track_List,ID),
      post => Get_ID(Get_Track'Result) = ID;
 
+   function Get_Track_Index(A_Track_List : in  Track_List; Index : in Natural)return Track;
+
+
 
    function Contains_Track(A_Track_List : in Track_List; ID : in Natural)return Boolean;
 

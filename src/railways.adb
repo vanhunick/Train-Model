@@ -77,8 +77,72 @@ package body Railways with SPARK_Mode => on is
    -- Checks if everything is still reachable after adding a track
    function Check_Reachability(A_Railway : Railway)return Boolean is
    begin
-      return True; -- TO IMPLEMENT
+      for I in 1.. Get_Count(A_Railway.All_Stations) loop
+         if  not Check_Reachability_Node(A_Railway, Get_Station_Index(A_Railway.All_Stations,I)) then return False;
+         end if;
+      end loop;
+      return True;
    end Check_Reachability;
+
+
+
+
+
+   -- Check count of stations not 0
+
+   function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean is
+      Station_Count : Natural;
+      Stack_Kinda : Station_Array(1.. Station_Lists.Get_Count(A_Railway.All_Stations));
+      Discovered : Nat_Array(1.. Station_Lists.Get_Count(A_Railway.All_Stations));
+      Stack_Height : Natural;
+      Popped_Station : Station;
+
+      Dest_Station : Natural;
+      Max_Index_Discovered : Natural;
+   begin
+      Station_Count := Station_Lists.Get_Count(A_Railway.All_Stations);
+      Stack_Height := 0; -- Init stack kinda
+      Max_Index_Discovered := 0;
+
+      Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station_Index(A_Railway.All_Stations,1);
+      Stack_Height := Stack_Height + 1; -- Increment stack height
+
+      while Stack_Height /= 0
+      loop
+         -- Pop v well decrement the count of the stack
+         Popped_Station := Stack_Kinda(Stack_Height);
+         Stack_Height := Stack_Height -1;
+
+
+         for I in 1.. Track_Lists.Get_Count(Popped_Station.Out_Tracks) loop -- Loop through all outgoing tracks of stations stations
+            Dest_Station := Tracks.Get_Destination(Track_Lists.Get_Track_Index(Popped_Station.Out_Tracks,I));
+
+            if not Contains_ID(Discovered,Max_Index_Discovered,Dest_Station) then
+               Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station(A_Railway.All_Stations,Dest_Station); -- Grab the station it goes to
+               Stack_Height := Stack_Height + 1; -- Increment stack height
+               Max_Index_Discovered := Max_Index_Discovered + 1;
+               Discovered(Max_Index_Discovered) := Dest_Station;
+            end if;
+         end loop;
+      end loop;
+
+      return Max_Index_Discovered = Station_Count-1;
+   end Check_Reachability_Node;
+
+
+
+   -- helper for checking something in array
+   function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean is
+   begin
+      for I in 1.. Max_Index loop
+         if  IDs(I) = ID then
+            return True;
+         end if;
+      end loop;
+      return False;
+   end Contains_ID;
+
+
 
 
    -- Moves a train to its destination

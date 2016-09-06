@@ -29,6 +29,8 @@ package Train_Lists with SPARK_Mode => on is
 
    procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural);
 
+   function Get_Train_Index(A_Train_List : in Train_List; Index : in Natural)return Train;
+
 
 
    private

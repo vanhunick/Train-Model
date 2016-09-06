@@ -53,6 +53,15 @@ package body Station_Lists with SPARK_Mode => on is
       return A_Station_List.Stations(1); -- Should never get here
    end Get_Station;
 
+   -- Used to iterate through the list
+   function Get_Station_Index(A_Station_List : in Station_List; Index : in Natural)return Station is
+   begin
+      return A_Station_List.Stations(Index);
+   end Get_Station_Index;
+
+
+
+
    function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean is
    begin
       for I in 1.. Get_Count(A_Station_List) loop
