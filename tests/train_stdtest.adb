@@ -351,6 +351,44 @@ package body Train_stdtest is
    -- ===========================================================
 
 
+   -- ===========================================================
+   --                 Test Railway Reachability
+   -- ===========================================================
+
+   procedure Test_Simple_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+
+      Track_To_2 : Track;
+      Track_To_1 : Track;
+
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+
+      Track_To_2 := Create(3,2,1);
+      Track_To_1 := Create(4,1,2);
+
+      Add_Outbound(Station_1,Track_To_2);
+      Add_Inbound(Station_1,Track_To_1);
+
+      Add_Outbound(Station_1,Track_To_2);
+      Add_Inbound(Station_1,Track_To_1);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+
+
+      Assert (Condition => (Stations.Get_ID(A_Station) = 1),
+              Message => "The Station should have ID of 1");
+
+   end Test_Create_Station;
+
+
 
 
    procedure Register_Tests (T: in out TC) is
