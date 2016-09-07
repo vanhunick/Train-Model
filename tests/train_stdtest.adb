@@ -7,6 +7,7 @@ with Station_Lists;
 with Stations; use Stations;
 with Trains; use Trains;
 with Locations; use Locations;
+with Railways; use Railways;
 
 package body Train_stdtest is
 
@@ -153,7 +154,7 @@ package body Train_stdtest is
       A_List : Train_Lists.Train_List;
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1);
+      A_Train := Create(1, 0 , OTHER);
       A_List := Train_Lists.Create;
       Train_Lists.Add_Train(A_List,A_Train);
 
@@ -165,7 +166,7 @@ package body Train_stdtest is
       A_List : Train_Lists.Train_List;
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1);
+      A_Train := Create(1, 0 , OTHER);
       A_List := Train_Lists.Create;
       Train_Lists.Add_Train(A_List,A_Train);
 
@@ -235,7 +236,7 @@ package body Train_stdtest is
       A_List : Train_Lists.Train_List;
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1);
+      A_Train := Create(1,0,OTHER);
       A_List := Train_Lists.Create;
       Train_Lists.Add_Train(A_List,A_Train);
 
@@ -250,8 +251,8 @@ package body Train_stdtest is
       A_Train : Trains.Train;
    begin
       A_Train_List := Train_Lists.Create;
-      A_Train := Create(1);
-      Trains.Set_Destination(A_Train,2);
+      A_Train := Create(1,0,OTHER);
+      Trains.Set_Destination(A_Train,2, Locations.TRACK);
       Trains.Update_Location(A_Train);
       Trains.Update_Location(A_Train);
       Train_Lists.Add_Train(A_Train_List, A_Train);
@@ -276,7 +277,7 @@ package body Train_stdtest is
    procedure Test_Train_Create(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1);
+      A_Train := Create(1,0,OTHER);
 
       Assert (Condition => (Get_ID(A_Train) = 1),
               Message => "The Train should be created with ID 1");
@@ -296,8 +297,8 @@ package body Train_stdtest is
    procedure Test_Train_Update_Location(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1);
-      Set_Destination(A_Train, 2);
+      A_Train := Create(1,0,OTHER);
+      Set_Destination(A_Train, 2, Locations.TRACK);
       Trains.Update_Location(A_Train);
 
 
@@ -308,8 +309,8 @@ package body Train_stdtest is
    procedure Test_Train_Set_Destination(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1);
-      Trains.Set_Destination(A_Train,2);
+      A_Train := Create(1,0,OTHER);
+      Trains.Set_Destination(A_Train,2, Locations.TRACK);
 
       Assert (Condition => (Get_Destination(A_Train) = 2),
               Message => "The Train should have destination of ID 2");
@@ -356,13 +357,13 @@ package body Train_stdtest is
    -- ===========================================================
 
    procedure Test_Simple_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
-      A_Railway : Railway
+      A_Railway : Railway;
 
       Station_1 : Stations.Station;
       Station_2 : Stations.Station;
 
-      Track_To_2 : Track;
-      Track_To_1 : Track;
+      Track_To_2 : Tracks.Track;
+      Track_To_1 : Tracks.Track;
 
    begin
       A_Railway := Create;
@@ -383,10 +384,44 @@ package body Train_stdtest is
       Add_Station(A_Railway, Station_2);
 
 
-      Assert (Condition => (Stations.Get_ID(A_Station) = 1),
-              Message => "The Station should have ID of 1");
+      Assert (Condition => (Railways.Check_Reachability(A_Railway)),
+              Message => "The Railway Should be reachable");
 
-   end Test_Create_Station;
+   end Test_Simple_Reachable;
+
+
+   procedure Test_Simple_Not_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+
+      Track_To_2 : Tracks.Track;
+      Track_To_1 : Tracks.Track;
+
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+
+      Track_To_2 := Create(3,2,1);
+      Track_To_1 := Create(4,1,2);
+
+--        Add_Outbound(Station_1,Track_To_2);
+      Add_Inbound(Station_1,Track_To_1);
+
+--        Add_Outbound(Station_1,Track_To_2);
+      Add_Inbound(Station_1,Track_To_1);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+
+
+      Assert (Condition => ( not Railways.Check_Reachability(A_Railway)),
+              Message => "The Railway Should not be reachable");
+
+   end Test_Simple_Not_Reachable;
 
 
 
@@ -429,6 +464,10 @@ package body Train_stdtest is
       Register_Routine (Test => T,Routine => Test_Create_Station'Access, Name => "Test_Create_Station");
 
       Register_Routine (Test => T,Routine => Test_Train_List_On_Destination'Access, Name => "Test_Train_List_On_Destination");
+
+      Register_Routine (Test => T,Routine => Test_Simple_Reachable'Access, Name => "Test_Simple_Reachable");
+
+      Register_Routine (Test => T,Routine => Test_Simple_Not_Reachable'Access, Name => "Test_Simple_Not_Reachable");
 
 
 
