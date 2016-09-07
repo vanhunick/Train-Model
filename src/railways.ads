@@ -7,12 +7,21 @@ with Stations; use Stations;
 
 package Railways with SPARK_Mode => on is
 
-   Type Railway is private;
+
+   --Type Railway is private;
+
+   -- Public for pre and post conditions
+   type Railway is
+      record
+         Started : Boolean;
+         All_Tracks : Track_List;
+         All_Stations : Station_List;
+         All_Trains : Train_List;
+      end record;
 
    type Nat_Array is array (Positive range <>) of Natural;
 
    type Station_Array is array (Positive range <>) of Station;
-
 
    function Create return Railway;
 
@@ -22,7 +31,7 @@ package Railways with SPARK_Mode => on is
 
    -- Moves a train
    procedure Move_Train(A_Railway : in out Railway; ID : Natural)with
-   pre => Valid_Train_ID(A_Railway, ID) and then Get_Started(A_Railway) = True and then Check_Collision(A_Railway,ID);
+     pre => Valid_Train_ID(A_Railway, ID) and then Get_Started(A_Railway) = True and then Check_Collision(A_Railway,ID);
 
    -- Add inbound track to station
    procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);
@@ -51,8 +60,14 @@ package Railways with SPARK_Mode => on is
 
 
    -- Returns if the passed in ID is allowed to be used
-   function Valid_Train_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
+   function Valid_Train_ID(A_Railway : in Railway; ID : in Natural)return Boolean with
+     post => (if Valid_Train_ID'Result then
+                (for all I in 1..Get_Count(A_Railway.All_Trains) => Get_ID(Get_Train_Index(A_Railway.All_Trains,I)) /= ID)
+                  else
+             ((for some I in 1..Get_Count(A_Railway.All_Trains) => Get_ID(Get_Train_Index(A_Railway.All_Trains,I)) = ID)));
+
    function Valid_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
+
    function Valid_Track_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
 
    function Get_Started(A_Railway : in Railway)return Boolean;
@@ -64,12 +79,12 @@ package Railways with SPARK_Mode => on is
 
 
 
-private
-   type Railway is
-      record
-         Started : Boolean;
-         All_Tracks : Track_List;
-         All_Stations : Station_List;
-         All_Trains : Train_List;
-      end record;
+--  private
+--     type Railway is
+--        record
+--           Started : Boolean;
+--           All_Tracks : Track_List;
+--           All_Stations : Station_List;
+--           All_Trains : Train_List;
+--        end record;
 end Railways;

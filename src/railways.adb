@@ -17,12 +17,11 @@ package body Railways with SPARK_Mode => on is
       return New_Railway;
    end Create;
 
-
+   -- Starts the sim, from this poinst no more tracks can be added if it makes the model unreachable
    procedure Start(A_Railway : in out Railway) is
    begin
       A_Railway.Started := True;
    end start;
-
 
    function Get_Started(A_Railway : in Railway)return Boolean is (A_Railway.Started);
 
@@ -37,7 +36,6 @@ package body Railways with SPARK_Mode => on is
          return False;
       end if;
    end Check_Collision;
-
 
 
    -- Add inbound track to station
@@ -84,10 +82,6 @@ package body Railways with SPARK_Mode => on is
       return True;
    end Check_Reachability;
 
-
-
-
-
    -- Check count of stations not 0
 
    function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean is
@@ -129,8 +123,6 @@ package body Railways with SPARK_Mode => on is
       return Max_Index_Discovered = Station_Count-1;
    end Check_Reachability_Node;
 
-
-
    -- helper for checking something in array
    function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean is
    begin
@@ -143,21 +135,17 @@ package body Railways with SPARK_Mode => on is
    end Contains_ID;
 
 
-
-
    -- Moves a train to its destination
    procedure Move_Train(A_Railway : in out Railway; ID : Natural) is
    begin
       Train_Lists.Move_Train(A_Railway.All_Trains, ID);
    end Move_Train;
 
-
    -- Returns if the Train ID exists in the railway
    function Valid_Train_ID(A_Railway : in Railway; ID : in Natural)return Boolean is
    begin
       return Train_Lists.Contains_Train(A_Railway.All_Trains, ID);
    end Valid_Train_ID;
-
 
    -- Returns if the Station ID exists in the railway
    function Valid_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean is
