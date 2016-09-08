@@ -6,7 +6,6 @@ with Track_Lists;
 with Station_Lists;
 with Stations; use Stations;
 with Trains; use Trains;
-with Locations; use Locations;
 with Railways; use Railways;
 
 package body Train_stdtest is
@@ -154,7 +153,7 @@ package body Train_stdtest is
       A_List : Train_Lists.Train_List;
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1, 0 , OTHER);
+      A_Train := Create(1, 0);
       A_List := Train_Lists.Create;
       Train_Lists.Add_Train(A_List,A_Train);
 
@@ -166,7 +165,7 @@ package body Train_stdtest is
       A_List : Train_Lists.Train_List;
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1, 0 , OTHER);
+      A_Train := Create(1, 0);
       A_List := Train_Lists.Create;
       Train_Lists.Add_Train(A_List,A_Train);
 
@@ -236,7 +235,7 @@ package body Train_stdtest is
       A_List : Train_Lists.Train_List;
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1,0,OTHER);
+      A_Train := Create(1,0);
       A_List := Train_Lists.Create;
       Train_Lists.Add_Train(A_List,A_Train);
 
@@ -251,8 +250,8 @@ package body Train_stdtest is
       A_Train : Trains.Train;
    begin
       A_Train_List := Train_Lists.Create;
-      A_Train := Create(1,0,OTHER);
-      Trains.Set_Destination(A_Train,2, Locations.TRACK);
+      A_Train := Create(1,0);
+      Trains.Set_Destination(A_Train,2);
       Trains.Update_Location(A_Train);
       Trains.Update_Location(A_Train);
       Train_Lists.Add_Train(A_Train_List, A_Train);
@@ -277,7 +276,7 @@ package body Train_stdtest is
    procedure Test_Train_Create(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1,0,OTHER);
+      A_Train := Create(1,0);
 
       Assert (Condition => (Get_ID(A_Train) = 1),
               Message => "The Train should be created with ID 1");
@@ -285,8 +284,6 @@ package body Train_stdtest is
       Assert (Condition => (Get_Destination(A_Train) = 0),
               Message => "The Train should be created with ID 1");
 
-      Assert (Condition => (Get_Location_Type(A_Train) = OTHER),
-              Message => "The Train should have default location type of OTHER");
 
       Assert (Condition => (Get_Destination(A_Train) = 0),
               Message => "The Train should have default destination of 0");
@@ -297,8 +294,8 @@ package body Train_stdtest is
    procedure Test_Train_Update_Location(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1,0,OTHER);
-      Set_Destination(A_Train, 2, Locations.TRACK);
+      A_Train := Create(1,0);
+      Set_Destination(A_Train, 2);
       Trains.Update_Location(A_Train);
 
 
@@ -309,8 +306,8 @@ package body Train_stdtest is
    procedure Test_Train_Set_Destination(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_Train : Trains.Train;
    begin
-      A_Train := Create(1,0,OTHER);
-      Trains.Set_Destination(A_Train,2, Locations.TRACK);
+      A_Train := Create(1,0);
+      Trains.Set_Destination(A_Train,2);
 
       Assert (Condition => (Get_Destination(A_Train) = 2),
               Message => "The Train should have destination of ID 2");
@@ -553,7 +550,7 @@ package body Train_stdtest is
       Station_1 := Create(1);
       Station_2 := Create(2);
 
-      A_Train := Create(1,1,Locations.STATION); -- Place on station 1
+      A_Train := Create(1,1); -- Place on station 1
 
       Track_To_1 := Create(3,2,1);
 
@@ -589,7 +586,7 @@ package body Train_stdtest is
       Station_1 := Create(1);
       Station_2 := Create(2);
 
-      A_Train := Create(1,0,Locations.OTHER); -- Place of station or track
+      A_Train := Create(1,0); -- Place of station or track
 
       Track_To_1 := Create(3,2,1);
 
@@ -626,7 +623,7 @@ package body Train_stdtest is
       Station_1 := Create(1);
       Station_2 := Create(2);
 
-      A_Train := Create(1,3,Locations.TRACK); -- Place of station or track
+      A_Train := Create(1,3); -- Place of station or track
 
       Track_To_1 := Create(3,2,1);
 
@@ -645,8 +642,6 @@ package body Train_stdtest is
               Message => "Should be a valid destination");
 
    end Test_Check_Valid_Destination_Track;
-
-
 
    procedure Register_Tests (T: in out TC) is
       use AUnit.Test_Cases.Registration;
@@ -704,10 +699,6 @@ package body Train_stdtest is
       Register_Routine (Test => T,Routine => Test_Check_Valid_Destination_Other'Access, Name => "Test_Check_Valid_Destination_Other");
 
       Register_Routine (Test => T,Routine => Test_Check_Valid_Destination_Track'Access, Name => "Test_Check_Valid_Destination_Track");
-
-
-
-
 
    end Register_Tests;
 
