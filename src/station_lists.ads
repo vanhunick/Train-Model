@@ -26,15 +26,21 @@ package Station_Lists with SPARK_Mode => on is
 
    function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean;
 
-   procedure Add_Outbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track);
 
-   procedure Add_Inbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track);
 
    function Get_Station_Index(A_Station_List : in Station_List; Index : in Natural)return Station;
 
+   procedure Add_Track(A_Station_List : in out Station_List; A_Track : Track);
 
 
-   private
+
+private
+   procedure Add_Outbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track);
+
+
+   procedure Add_Inbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track);
+
+
    type Station_List is
       record
          Count : Integer;

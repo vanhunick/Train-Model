@@ -34,10 +34,10 @@ package Railways with SPARK_Mode => on is
      pre => Valid_Train_ID(A_Railway, ID) and then Get_Started(A_Railway) = True and then Check_Collision(A_Railway,ID);
 
    -- Add inbound track to station
-   procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);
-
-   -- Add outbound track to station
-   procedure Add_Outbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);
+--     procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);
+--
+--     -- Add outbound track to station
+--     procedure Add_Outbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track);
 
    -- Add station
    procedure Add_Station(A_Railway : in out Railway; A_Station : in Station) with
@@ -76,6 +76,8 @@ package Railways with SPARK_Mode => on is
      pre => Valid_Train_ID(A_Railway, ID);
 
    function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean;
+
+
 
 
 

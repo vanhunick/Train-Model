@@ -4,6 +4,7 @@ with Station_Lists; use Station_Lists;
 with Tracks; use Tracks;
 with Trains; use Trains;
 with Stations; use Stations;
+with Text_IO; use Text_IO;
 
 package body Railways with SPARK_Mode => on is
 
@@ -38,20 +39,6 @@ package body Railways with SPARK_Mode => on is
    end Check_Collision;
 
 
-   -- Add inbound track to station
-   procedure Add_Inbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track) is
-   begin
-      Station_Lists.Add_Inbound(A_Railway.All_Stations, Station_ID,A_Track);
-   end Add_Inbound;
-
-
-   -- Add outbound track to station
-   procedure Add_Outbound(A_Railway : in out Railway; Station_ID : Natural; A_Track : in Track) is
-   begin
-      Station_Lists.Add_Outbound(A_Railway.All_Stations, Station_ID,A_Track);
-   end Add_Outbound;
-
-
    -- Add station
    procedure Add_Station(A_Railway : in out Railway; A_Station : in Station) is
    begin
@@ -63,6 +50,7 @@ package body Railways with SPARK_Mode => on is
    procedure Add_Track(A_Railway : in out Railway; A_Track : in Track) is
    begin
       Track_Lists.Add_Track(A_Railway.All_Tracks, A_Track);
+      Station_Lists.Add_Track(A_Railway.All_Stations,A_Track);
    end Add_Track;
 
 
@@ -75,6 +63,8 @@ package body Railways with SPARK_Mode => on is
    -- Checks if everything is still reachable after adding a track
    function Check_Reachability(A_Railway : Railway)return Boolean is
    begin
+      if Get_Count(A_Railway.All_Stations) = 1 then return True; end if;
+
       for I in 1.. Get_Count(A_Railway.All_Stations) loop
          if  not Check_Reachability_Node(A_Railway, Get_Station_Index(A_Railway.All_Stations,I)) then return False;
          end if;
@@ -95,21 +85,20 @@ package body Railways with SPARK_Mode => on is
       Max_Index_Discovered : Natural;
    begin
       Station_Count := Station_Lists.Get_Count(A_Railway.All_Stations);
-      Stack_Height := 0; -- Init stack kinda
+      Stack_Height := 0; -- Init stack
       Max_Index_Discovered := 0;
 
-      Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station_Index(A_Railway.All_Stations,1);
+      Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station_Index(A_Railway.All_Stations,1); -- Put the first station on the stack
       Stack_Height := Stack_Height + 1; -- Increment stack height
 
       while Stack_Height /= 0
       loop
-         -- Pop v well decrement the count of the stack
-         Popped_Station := Stack_Kinda(Stack_Height);
-         Stack_Height := Stack_Height -1;
-
+         Popped_Station := Stack_Kinda(Stack_Height); -- Take top item off the stack
+         Stack_Height := Stack_Height -1; -- Decrement stack height
 
          for I in 1.. Track_Lists.Get_Count(Popped_Station.Out_Tracks) loop -- Loop through all outgoing tracks of stations stations
             Dest_Station := Tracks.Get_Destination(Track_Lists.Get_Track_Index(Popped_Station.Out_Tracks,I));
+            Put_Line("Looping");
 
             if not Contains_ID(Discovered,Max_Index_Discovered,Dest_Station) then
                Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station(A_Railway.All_Stations,Dest_Station); -- Grab the station it goes to
@@ -120,7 +109,7 @@ package body Railways with SPARK_Mode => on is
          end loop;
       end loop;
 
-      return Max_Index_Discovered = Station_Count-1;
+      return Max_Index_Discovered = Station_Count;
    end Check_Reachability_Node;
 
    -- helper for checking something in array

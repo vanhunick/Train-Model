@@ -126,7 +126,7 @@ package body Train_stdtest is
    end Test_Create_Station_List;
 
 
-      procedure Test_Add_Station_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+   procedure Test_Add_Station_List(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
       A_List : Station_Lists.Station_List;
       A_Station : Stations.Station;
    begin
@@ -335,15 +335,15 @@ package body Train_stdtest is
    end Test_Create_Station;
 
 
---     procedure Test_Create_Station(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
---        A_Station : Stations.Station;
---     begin
---        A_Station := Create(1);
---
---        Assert (Condition => (Stations.Get_ID(A_Station) = 1),
---                Message => "The Station should have ID of 1");
---
---     end Test_Create_Station;
+   --     procedure Test_Create_Station(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+   --        A_Station : Stations.Station;
+   --     begin
+   --        A_Station := Create(1);
+   --
+   --        Assert (Condition => (Stations.Get_ID(A_Station) = 1),
+   --                Message => "The Station should have ID of 1");
+   --
+   --     end Test_Create_Station;
 
 
 
@@ -374,20 +374,98 @@ package body Train_stdtest is
       Track_To_2 := Create(3,2,1);
       Track_To_1 := Create(4,1,2);
 
-      Add_Outbound(Station_1,Track_To_2);
-      Add_Inbound(Station_1,Track_To_1);
-
-      Add_Outbound(Station_1,Track_To_2);
-      Add_Inbound(Station_1,Track_To_1);
-
       Add_Station(A_Railway, Station_1);
       Add_Station(A_Railway, Station_2);
+
+      Add_Track(A_Railway,Track_To_1);
+      Add_Track(A_Railway,Track_To_2);
 
 
       Assert (Condition => (Railways.Check_Reachability(A_Railway)),
               Message => "The Railway Should be reachable");
 
    end Test_Simple_Reachable;
+
+   procedure Test_Complicated_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+      Station_3 : Stations.Station;
+      Station_4 : Stations.Station;
+
+      Track_1_To_2 : Tracks.Track;
+      Track_2_To_3 : Tracks.Track;
+      Track_3_To_4 : Tracks.Track;
+      Track_4_To_5 : Tracks.Track;
+
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+      Station_3 := Create(3);
+      Station_4 := Create(4);
+
+      Track_1_To_2 := Create(5,2,1);
+      Track_2_To_3 := Create(6,3,2);
+      Track_3_To_4 := Create(7,4,3);
+      Track_4_To_5 := Create(8,5,4);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+      Add_Station(A_Railway, Station_3);
+      Add_Station(A_Railway, Station_4);
+
+      Add_Track(A_Railway,Track_1_To_2);
+      Add_Track(A_Railway,Track_2_To_3);
+      Add_Track(A_Railway,Track_3_To_4);
+      Add_Track(A_Railway,Track_4_To_5);
+
+      Assert (Condition => (Railways.Check_Reachability(A_Railway)),
+              Message => "The Railway Should be reachable");
+
+   end Test_Complicated_Reachable;
+
+   procedure Test_Complicated_Not_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+      Station_3 : Stations.Station;
+      Station_4 : Stations.Station;
+
+      Track_1_To_2 : Tracks.Track;
+      Track_2_To_3 : Tracks.Track;
+      Track_3_To_4 : Tracks.Track;
+      Track_4_To_5 : Tracks.Track;
+
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+      Station_3 := Create(3);
+      Station_4 := Create(4);
+
+      Track_1_To_2 := Create(5,2,1);
+      Track_2_To_3 := Create(6,3,2);
+      Track_3_To_4 := Create(7,4,3);
+      Track_4_To_5 := Create(8,5,4);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+      Add_Station(A_Railway, Station_3);
+      Add_Station(A_Railway, Station_4);
+
+      Add_Track(A_Railway,Track_2_To_3);
+      Add_Track(A_Railway,Track_3_To_4);
+      Add_Track(A_Railway,Track_4_To_5);
+
+      Assert (Condition => (not Railways.Check_Reachability(A_Railway)),
+              Message => "The Railway Should not be reachable");
+
+   end Test_Complicated_Not_Reachable;
 
 
    procedure Test_Simple_Not_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
@@ -408,20 +486,53 @@ package body Train_stdtest is
       Track_To_2 := Create(3,2,1);
       Track_To_1 := Create(4,1,2);
 
---        Add_Outbound(Station_1,Track_To_2);
-      Add_Inbound(Station_1,Track_To_1);
-
---        Add_Outbound(Station_1,Track_To_2);
-      Add_Inbound(Station_1,Track_To_1);
-
       Add_Station(A_Railway, Station_1);
       Add_Station(A_Railway, Station_2);
 
+      Add_Track(A_Railway,Track_To_1);
 
       Assert (Condition => ( not Railways.Check_Reachability(A_Railway)),
               Message => "The Railway Should not be reachable");
 
    end Test_Simple_Not_Reachable;
+
+      procedure Test_Edge_Case_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+      Station_1 : Stations.Station;
+
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+
+      Add_Station(A_Railway, Station_1);
+
+      Assert (Condition => (Railways.Check_Reachability(A_Railway)),
+              Message => "The Railway Should be reachable");
+
+   end Test_Edge_Case_Reachable;
+
+   procedure Test_Case_No_Tracks_Not_Reachable(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+
+
+      Assert (Condition => (not Railways.Check_Reachability(A_Railway)),
+              Message => "The Railway Should not be reachable");
+
+   end Test_Case_No_Tracks_Not_Reachable;
+
 
 
 
@@ -468,6 +579,15 @@ package body Train_stdtest is
       Register_Routine (Test => T,Routine => Test_Simple_Reachable'Access, Name => "Test_Simple_Reachable");
 
       Register_Routine (Test => T,Routine => Test_Simple_Not_Reachable'Access, Name => "Test_Simple_Not_Reachable");
+
+      Register_Routine (Test => T,Routine => Test_Complicated_Not_Reachable'Access, Name => "Test_Complicated_Not_Reachable");
+
+      Register_Routine (Test => T,Routine => Test_Complicated_Reachable'Access, Name => "Test_Complicated_Reachable");
+
+      Register_Routine (Test => T,Routine => Test_Edge_Case_Reachable'Access, Name => "Test_Edge_Case_Reachable");
+
+      Register_Routine (Test => T,Routine => Test_Case_No_Tracks_Not_Reachable'Access, Name => "Test_Case_No_Tracks_Not_Reachable");
+
 
 
 
