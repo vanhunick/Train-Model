@@ -534,6 +534,117 @@ package body Train_stdtest is
    end Test_Case_No_Tracks_Not_Reachable;
 
 
+   -- ===========================================================
+   --                 Test Destination check function
+   -- ===========================================================
+
+   procedure Test_Check_Valid_Destination(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+
+      A_Train : Train;
+
+      Track_To_1 : Tracks.Track;
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+
+      A_Train := Create(1,1,Locations.STATION); -- Place on station 1
+
+      Track_To_1 := Create(3,2,1);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+
+      Add_Track(A_Railway, Track_To_1);
+
+      Add_Train(A_Railway, A_Train);
+
+
+      Assert (Condition => (Check_Valid_Destination(A_Railway,1,3)),
+              Message => "Should be a valid destination");
+
+      Assert (Condition => (not Check_Valid_Destination(A_Railway,1,4)),
+              Message => "Should not be a valid destination");
+
+
+   end Test_Check_Valid_Destination;
+
+   procedure Test_Check_Valid_Destination_Other(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+
+      A_Train : Train;
+
+      Track_To_1 : Tracks.Track;
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+
+      A_Train := Create(1,0,Locations.OTHER); -- Place of station or track
+
+      Track_To_1 := Create(3,2,1);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+
+      Add_Track(A_Railway, Track_To_1);
+
+      Add_Train(A_Railway, A_Train);
+
+
+      Assert (Condition => (not Check_Valid_Destination(A_Railway,1,3)), -- Can't move to a track
+              Message => "Should not be a valid destination");
+
+      Assert (Condition => (Check_Valid_Destination(A_Railway,1,1)), -- Can move to any station from OTHER
+              Message => "Should be a valid destination");
+
+      Assert (Condition => (Check_Valid_Destination(A_Railway,1,2)),
+              Message => "Should be a valid destination");
+   end Test_Check_Valid_Destination_Other;
+
+      procedure Test_Check_Valid_Destination_Track(CWTC : in out AUnit.Test_Cases.Test_Case'Class) is
+      A_Railway : Railway;
+
+      Station_1 : Stations.Station;
+      Station_2 : Stations.Station;
+
+      A_Train : Train;
+
+      Track_To_1 : Tracks.Track;
+   begin
+      A_Railway := Create;
+
+      Station_1 := Create(1);
+      Station_2 := Create(2);
+
+      A_Train := Create(1,3,Locations.TRACK); -- Place of station or track
+
+      Track_To_1 := Create(3,2,1);
+
+      Add_Station(A_Railway, Station_1);
+      Add_Station(A_Railway, Station_2);
+
+      Add_Track(A_Railway, Track_To_1);
+
+      Add_Train(A_Railway, A_Train);
+
+
+      Assert (Condition => (not Check_Valid_Destination(A_Railway,1,1)), -- Can't move to station 1
+              Message => "Should not be a valid destination");
+
+      Assert (Condition => (Check_Valid_Destination(A_Railway,1,2)), -- Can move to station 2
+              Message => "Should be a valid destination");
+
+   end Test_Check_Valid_Destination_Track;
 
 
 
@@ -587,6 +698,13 @@ package body Train_stdtest is
       Register_Routine (Test => T,Routine => Test_Edge_Case_Reachable'Access, Name => "Test_Edge_Case_Reachable");
 
       Register_Routine (Test => T,Routine => Test_Case_No_Tracks_Not_Reachable'Access, Name => "Test_Case_No_Tracks_Not_Reachable");
+
+      Register_Routine (Test => T,Routine => Test_Check_Valid_Destination'Access, Name => "Test_Check_Valid_Destination");
+
+      Register_Routine (Test => T,Routine => Test_Check_Valid_Destination_Other'Access, Name => "Test_Check_Valid_Destination_Other");
+
+      Register_Routine (Test => T,Routine => Test_Check_Valid_Destination_Track'Access, Name => "Test_Check_Valid_Destination_Track");
+
 
 
 

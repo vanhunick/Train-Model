@@ -31,6 +31,7 @@ package Stations with SPARK_Mode => on is
 
    function Add_Outbound_Check(A_Station : in Station; A_Track : in Track)return Boolean;
 
+   function Go_To_Track(A_Station : in Station; Track_ID : in Natural)return Boolean;
 
 
 --  private

@@ -58,6 +58,7 @@ package Railways with SPARK_Mode => on is
    -- Helper function for Depth first search
    function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean;
 
+   function Valid_Track_Or_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
 
    -- Returns if the passed in ID is allowed to be used
    function Valid_Train_ID(A_Railway : in Railway; ID : in Natural)return Boolean with
@@ -77,7 +78,7 @@ package Railways with SPARK_Mode => on is
 
    function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean;
 
-
+   function Check_Valid_Destination(A_Railway : in Railway; ID_Train : Natural; ID_Destination : in Natural)return Boolean;
 
 
 

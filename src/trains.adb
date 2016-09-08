@@ -26,7 +26,6 @@ package body Trains is
       A_Train.Destination_Type := Location_Type;
    end Set_Destination;
 
-
    function Get_ID(A_Train : in Train)return Natural is (A_Train.ID);
 
    function Get_Location(A_Train : in Train)return Natural is (A_Train.Cur_Location_ID);

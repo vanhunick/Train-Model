@@ -35,7 +35,13 @@ package body Stations with SPARK_Mode => on is
    --
    function Add_Outbound_Check(A_Station : in Station; A_Track : in Track)return Boolean is
    begin
-      return Track_Lists.Contains_Track(A_Station.Out_Tracks, Get_ID(A_Track));
+      return Track_Lists.Contains_Track(A_Station.Out_Tracks, Get_ID(A_Track)); -- ?????
    end Add_Outbound_Check;
+
+   function Go_To_Track(A_Station : in Station; Track_ID : in Natural)return Boolean is
+   begin
+      return Track_Lists.Contains_Track(A_Station.Out_Tracks, Track_ID); -- If it contains the track it should be able to go to it
+   end Go_To_Track;
+
 
 end Stations;
