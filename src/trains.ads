@@ -17,16 +17,20 @@ package Trains with SPARK_Mode => on is
      Post => Get_ID(Create'Result) = ID and then
      Get_Location(Create'Result) = Start_Location_ID;
 
-
+   -- ===========================================================
+   --                 Update Procedures
+   -- ===========================================================
 
    procedure Update_Location(A_Train : in out Train) with
-     Pre => Get_Destination(A_Train) /= 0, -- 0 is the default value
      Post => Get_Location(A_Train) = Get_Destination(A_Train'old);
 
 
    procedure Set_Destination(A_Train : in out Train; ID : in Natural) with
-     post => Get_Destination(A_Train) = ID;
+     post => A_Train.Destination = ID;
 
+   -- ===========================================================
+   --                 Get Functions
+   -- ===========================================================
 
    function Get_ID(A_Train : in Train)return Natural with
      post => Get_ID'Result = A_Train.ID;

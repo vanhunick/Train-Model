@@ -4,13 +4,12 @@ package body Trains is
    function Create(ID : in Natural; Start_Location_ID : in Natural)return Train is
       A_Train : Train;
    begin
-      A_Train.Destination := 0;
+      A_Train.Destination := Start_Location_ID;
       A_Train.Cur_Location_ID := Start_Location_ID;
       A_Train.ID := ID;
       return A_Train;
    end Create;
 
-   -- MIGHT CHANGE TO JUST UPDATE IT TO DESTINATION
    procedure Update_Location(A_Train : in out Train) is
    begin
       A_Train.Cur_Location_ID := A_Train.Destination;

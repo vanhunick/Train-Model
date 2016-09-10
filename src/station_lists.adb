@@ -22,10 +22,8 @@ package body Station_Lists with SPARK_Mode => on is
    -- Add an inbound track to the station
    procedure Add_Inbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track) is
    begin
-      Put_Line("Adding Inbound");
       for I in 1.. Get_Count(A_Station_List) loop
          if  Get_ID(A_Station_List.Stations(I)) = Station_ID then                  -- Here we have found the station to add the track to
-            Put_Line("Found Inbound");
             Stations.Add_Inbound(A_Station_List.Stations(I), A_Track);
          end if;
       end loop;
@@ -33,7 +31,6 @@ package body Station_Lists with SPARK_Mode => on is
 
    procedure Add_Track(A_Station_List : in out Station_List; A_Track : in Track) is
    begin
-      Put_Line("Adding Track");
       Add_Outbound(A_Station_List, Get_Origin(A_Track), A_Track);
       Add_Inbound(A_Station_List, Get_Destination(A_Track), A_Track);
    end Add_Track;
@@ -42,10 +39,8 @@ package body Station_Lists with SPARK_Mode => on is
    -- Add an outbound track to the station
    procedure Add_Outbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track) is
    begin
-      Put_Line("Adding Outbound");
       for I in 1.. Get_Count(A_Station_List) loop
          if  Get_ID(A_Station_List.Stations(I)) = Station_ID then
-            Put_Line("Found Outbound");
             Stations.Add_Outbound(A_Station_List.Stations(I), A_Track);
          end if;
       end loop;

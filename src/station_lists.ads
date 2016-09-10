@@ -24,7 +24,8 @@ package Station_Lists with SPARK_Mode => on is
      pre => Contains_Station(A_Station_List,ID),
      post => Get_ID(Get_Station'Result) = ID;
 
-   function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean;
+   function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean;-- with
+--     Post => (if Contains_Station'Result then (for some I
 
    function Get_Station_Index(A_Station_List : in Station_List; Index : in Natural)return Station;
 

@@ -5,11 +5,13 @@ package Track_Lists with SPARK_Mode => on is
    -- The underlying array of tracks
    type Track_Array is array (Positive range 1..100) of Track;
 
+--        Track_Empty : Track;
+
 --     Type Track_List is private;
    type Track_List is
       record
          Count : Integer;
-         Tracks : Track_Array;
+         Tracks : Track_Array;--:= (others => Track_Empty); -- Init with empty track I think
          Max : Integer;
       end record;
 

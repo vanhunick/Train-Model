@@ -44,10 +44,16 @@ package body Train_Lists with SPARK_Mode => on is
       return A_Train_List.Trains(1); -- Should never get here
    end Get_Train;
 
+   procedure Get_Train(A_Train_List : in Train_List; ID : in Natural; Found_Train out Train ) is begin
+
+   end Get_Train;
+
+
+
 
    function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean is
    begin
-      for I in 1.. Get_Count(A_Train_List) loop
+      for I in 1..Get_Count(A_Train_List) loop
          if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to
             return True;
          end if;

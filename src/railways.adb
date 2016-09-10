@@ -16,20 +16,20 @@ package body Railways with SPARK_Mode => on is
       New_Railway.All_Tracks := Track_Lists.Create;
       New_Railway.All_Trains := Train_Lists.Create;
       New_Railway.All_Stations := Station_Lists.Create;
+      New_Railway.Started := False;
       return New_Railway;
    end Create;
 
    -- Starts the simulation, from this poinst no more tracks can be added
    procedure Start(A_Railway : in out Railway) is
    begin
-      A_Railway.Started := True;
+      if(Check_Reachability(A_Railway)) then
+         A_Railway.Started := True;
+      end if;
    end start;
 
-   -- Set Destination of a train the destination can only be the next location
-   procedure Set_Destination(A_Railway : in out Railway; ID_Train : in Natural; ID_Destination : in Natural) is
-   begin
-      null;
-   end Set_Destination;
+
+
 
    function Check_Valid_Destination(A_Railway : in Railway; ID_Train : Natural; ID_Destination : in Natural)return Boolean is
       A_Train : Train;
@@ -40,22 +40,24 @@ package body Railways with SPARK_Mode => on is
       Cur_Location_ID := Get_Location(A_Train);
 
       if Cur_Location_ID = 0 then
-         Put_Line("Here 1");
+
          return Contains_Station(A_Railway.All_Stations, ID_Destination); -- We can move from unknown to any station
       elsif Contains_Station(A_Railway.All_Stations, Cur_Location_ID) then -- Check if the cur location is in station
-         Put_Line("Here 2");
+
          return Go_To_Track(Get_Station(A_Railway.All_Stations,Cur_Location_ID), ID_Destination); -- Check if the cur station has outgoing that meets destination id
       elsif Contains_Track(A_Railway.All_Tracks, Cur_Location_ID) then
-         Put_Line("Here 3");
-         return Get_Destination(Get_Track(A_Railway.All_Tracks, Cur_Location_ID)) = ID_Destination; -- Return if the destination of the current track is the destination ID
 
+         return Get_Destination(Get_Track(A_Railway.All_Tracks, Cur_Location_ID)) = ID_Destination; -- Return if the destination of the current track is the destination ID
       else
-                  Put_Line("Here 4");
          return False; -- The destination ID does not exist
       end if;
    end Check_Valid_Destination;
 
-
+   -- Set Destination of a train the destination can only be the next location
+   procedure Set_Destination(A_Railway : in out Railway; Train_ID : in Natural; Destination_ID : in Natural) is
+   begin
+      Set_Destination(A_Railway.All_Trains, Train_ID, Destination_ID);
+   end Set_Destination;
 
 
    -- Check if the train with the ID passed in will collide with something if it moves to its destination
@@ -74,22 +76,35 @@ package body Railways with SPARK_Mode => on is
    -- Adds a station to the model railway
    procedure Add_Station(A_Railway : in out Railway; A_Station : in Station) is
    begin
-      Station_Lists.Add_Station(A_Railway.All_Stations, A_Station);
+      -- First check if we can still fit more trains
+      if Get_Count(A_Railway.All_Stations) < Get_Max(A_Railway.All_Stations) and then
+        not Valid_Station_ID(A_Railway, Get_ID(A_Station)) then
+         Station_Lists.Add_Station(A_Railway.All_Stations, A_Station);
+      end if;
    end Add_Station;
 
 
    -- Add a track to the model railway
    procedure Add_Track(A_Railway : in out Railway; A_Track : in Track) is
    begin
-      Track_Lists.Add_Track(A_Railway.All_Tracks, A_Track);
-      Station_Lists.Add_Track(A_Railway.All_Stations,A_Track);
+      -- First check if we can still fit more tracks
+      if Get_Count(A_Railway.All_Tracks) < Get_Max(A_Railway.All_Tracks) and then
+        not Valid_Track_ID(A_Railway, Get_ID(A_Track)) then
+         Track_Lists.Add_Track(A_Railway.All_Tracks, A_Track);
+         Station_Lists.Add_Track(A_Railway.All_Stations,A_Track); -- Might need to seperate this out
+      end if;
+
    end Add_Track;
 
 
    -- Add a train to the model railway
    procedure Add_Train(A_Railway : in out Railway; A_Train : in Train) is
    begin
-      Train_Lists.Add_Train(A_Railway.All_Trains, A_Train);
+      -- First check if we can still fit more tracks
+      if Get_Count(A_Railway.All_Trains) < Get_Max(A_Railway.All_Trains) and then
+        not Valid_Train_ID(A_Railway, Get_ID(A_Train)) then
+         Train_Lists.Add_Train(A_Railway.All_Trains, A_Train);
+      end if;
    end Add_Train;
 
    -- Checks if everything is still reachable after adding a track
@@ -116,6 +131,8 @@ package body Railways with SPARK_Mode => on is
       Dest_Station : Natural; -- The ID of the destination of the track being processed
       Max_Index_Discovered : Natural; -- The max index in the array of discovered stations
    begin
+      Discovered := (others => 0); -- Init with default values 0
+
       Station_Count := Station_Lists.Get_Count(A_Railway.All_Stations);
       Stack_Height := 0; -- Init stack
       Max_Index_Discovered := 0; -- Init discovered index
