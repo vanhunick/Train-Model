@@ -24,8 +24,8 @@ package Train_Lists with SPARK_Mode => on is
 
    -- Add a Train to the list
    procedure Add_Train(A_Train_List : in out Train_List; A_Train : in Train) with
-     pre => Get_Count(A_Train_List) < A_Train_List.Trains'Last,
-     post => Get_Count(A_Train_List) - 1 = Get_Count(A_Train_List)'old and then
+     pre => A_Train_List.Count < Natural'Last and then A_Train_List.Count + 1 < A_Train_List.Trains'Last,
+     post => Get_Count(A_Train_List) = Get_Count(A_Train_List)'old + 1 and then
      Get_Count(A_Train_List) <= A_Train_List.Trains'Last and then  -- Make sure count less than the last array index
    (for some I in 1..Get_Count(A_Train_List) => A_Train_List.Trains(I) = A_Train); -- Check the train is somewhere in the array
 
