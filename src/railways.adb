@@ -8,6 +8,7 @@ with Text_IO; use Text_IO;
 
 package body Railways with SPARK_Mode => on is
 
+
    -- Creates and returns a new Railway
    function Create return Railway is
       New_Railway : Railway;
@@ -68,8 +69,8 @@ package body Railways with SPARK_Mode => on is
    -- Check if the train with the ID passed in will collide with something if it moves to its destination
    function Check_Collision(A_Railway : in Railway; ID : in Natural)return Boolean is
       Destination : Natural; -- The ID of the destination of the train
-      begin
-         if not Contains_Train(A_Railway.All_Trains, ID) Then return False; end if;
+   begin
+      if not Contains_Train(A_Railway.All_Trains, ID) Then return False; end if;
 
       Destination := Trains.Get_Destination(Train_Lists.Get_Train(A_Railway.All_Trains,ID)); -- Get the destination of the train from the train list
       if Train_Lists.On_Destination(A_Railway.All_Trains,Destination) then -- Checks if any trains are on the destination
@@ -130,11 +131,14 @@ package body Railways with SPARK_Mode => on is
    end Check_Reachability;
 
 
+
+
+
    -- Does DFS to find out of all stations are reachable from A_Station passed in
    function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean is
       Station_Count : Natural; -- The total number of Stations in the railway
-      Stack_Kinda : Station_Array(1.. Station_Lists.Get_Count(A_Railway.All_Stations)); -- Create a array max size number of stations
-      Discovered : Nat_Array(1.. Station_Lists.Get_Count(A_Railway.All_Stations)); -- An array to store the IDs of the stations found
+      Stack_Kinda : Station_Array := (others => Stations.Create(0)); -- Create a array max size number of stations
+      Discovered : Nat_Array; -- An array to store the IDs of the stations found
       Stack_Height : Natural; -- The current height of the stack
       Popped_Station : Station; -- The Station popped that is being processed
       Dest_Station : Natural; -- The ID of the destination of the track being processed
@@ -151,27 +155,44 @@ package body Railways with SPARK_Mode => on is
       Index := Stack_Height + 1;
 
       if (Index in Stack_Kinda'First..Stack_Kinda'Last) then
+         if not Contains_Station(A_Railway.All_Stations, 1) then return False; end if;
+
          Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station_Index(A_Railway.All_Stations,1); -- Put the first station on the stack
          Stack_Height := Stack_Height + 1; -- Increment stack height
-      end if;
 
 
-      while Stack_Height /= 0 -- Keep looping untill stack is empty
-      loop
-         Popped_Station := Stack_Kinda(Stack_Height); -- Assign top item on stack
-         Stack_Height := Stack_Height -1; -- Decrement stack height
 
-         for I in 1.. Track_Lists.Get_Count(Popped_Station.Out_Tracks) loop -- Loop through all outgoing tracks of the popped stations tracks
-            Dest_Station := Tracks.Get_Destination(Track_Lists.Get_Track_Index(Popped_Station.Out_Tracks,I)); -- Get the destination of the track going out of the station
+         while Stack_Height /= 0 and Stack_Height < Stack_Kinda'Last and Stack_Height >= Stack_Kinda'First -- Keep looping untill stack is empty
+         loop
+            Popped_Station := Stack_Kinda(Stack_Height); -- Assign top item on stack
+            Stack_Height := Stack_Height -1; -- Decrement stack height
 
-            if not Contains_ID(Discovered,Max_Index_Discovered,Dest_Station) then -- Check to make sure not already processed
-               Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station(A_Railway.All_Stations,Dest_Station); -- Grab the station it goes to and put on stack
-               Stack_Height := Stack_Height + 1; -- Increment stack height
-               Max_Index_Discovered := Max_Index_Discovered + 1; -- Increment discovered
-               Discovered(Max_Index_Discovered) := Dest_Station; -- Add to discovered array
-            end if;
+            for I in 1.. Track_Lists.Get_Count(Popped_Station.Out_Tracks) loop -- Loop through all outgoing tracks of the popped stations tracks
+
+               Dest_Station := Tracks.Get_Destination(Track_Lists.Get_Track_Index(Popped_Station.Out_Tracks,I)); -- Get the destination of the track going out of the station
+
+               if not Contains_ID(Discovered,Max_Index_Discovered,Dest_Station) then -- Check to make sure not already processed
+                  if not (Stack_Height < Natural'Last) then return false; end if; -- Overflow Check
+
+                  if not Contains_Station(A_Railway.All_Stations,Dest_Station) then return False; end if; -- Check Station exists
+
+                  Index := Stack_Height + 1;
+
+                  if (Index in Stack_Kinda'First..Stack_Kinda'Last) then
+                     Stack_Kinda(Index) := Station_Lists.Get_Station_Index(A_Railway.All_Stations,1); -- Put the first station on the stack
+                     Stack_Height := Stack_Height + 1; -- Increment stack height
+                  end if;
+
+
+                  if Max_Index_Discovered < Natural'Last and then Max_Index_Discovered < Discovered'Last then
+                     Max_Index_Discovered := Max_Index_Discovered + 1; -- Increment discovered
+                     Discovered(Max_Index_Discovered) := Dest_Station; -- Add to discovered array
+                  end if;
+               end if;
+            end loop;
          end loop;
-      end loop;
+
+      end if;
 
       return Max_Index_Discovered = Station_Count; -- If the nodes in the railway is equal to the ones found then it is reachable
    end Check_Reachability_Node;
@@ -180,9 +201,11 @@ package body Railways with SPARK_Mode => on is
    function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean is
    begin
       for I in 1.. Max_Index loop
-         if  IDs(I) = ID then -- The ID already Exists
-            return True;
-         end if;
+           if I <= Nat_Array'Last then
+            if  IDs(I) = ID then -- The ID already Exists
+               return True;
+            end if;
+           end if;
       end loop;
       return False; -- ID does not exist
    end Contains_ID;
@@ -192,7 +215,7 @@ package body Railways with SPARK_Mode => on is
    procedure Move_Train(A_Railway : in out Railway; ID : Natural) is
    begin
       if not Get_Started(A_Railway) then return; end if;
-      if not Valid_Train_ID(A_Railway, ID) then return; end if;
+      if not Train_Lists.Contains_Train(A_Railway.All_Trains, ID) then return; end if;
 
       Train_Lists.Move_Train(A_Railway.All_Trains, ID);
 

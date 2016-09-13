@@ -20,10 +20,10 @@ package Railways with SPARK_Mode => on is
       end record;
 
    -- Array of found IDs for reachability
-   type Nat_Array is array (Natural range <>) of Natural;
+   type Nat_Array is array (Natural range 1..100) of Natural;
 
    -- Station stack
-   type Station_Array is array (Positive range <>) of Station;
+   type Station_Array is array (Positive range 1..100) of Station;
 
    -- Creates an empty railway, Creates lists for trains, tracks, and stations
    function Create return Railway with

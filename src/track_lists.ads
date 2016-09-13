@@ -38,7 +38,7 @@ package Track_Lists with SPARK_Mode => on is
      post => Get_ID(Get_Track'Result) = ID;
 
    function Get_Track_Index(A_Track_List : in  Track_List; Index : in Natural)return Track with
-     pre => Index <= Get_Count(A_Track_List) and then Get_Count(A_Track_List) < A_Track_List.Tracks'Last and then Index /= 0,
+     pre => Index <= Get_Count(A_Track_List) and then Index /= 0,
      post => Get_Track_Index'Result = A_Track_List.Tracks(Index);
 
 

@@ -50,7 +50,7 @@ package Train_Lists with SPARK_Mode => on is
 
 
    procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural) with
-     pre => Get_Count(A_Train_List) < A_Train_List.Trains'Last and then (for some  I in 1.. Get_Count(A_Train_List) => Get_ID(A_Train_List.Trains(I)) = ID), -- There need to be a train that matched the id in the list
+     pre => Contains_Train(A_Train_List,ID), -- There need to be a train that matched the id in the list
      post => Get_Location(Get_Train(A_Train_List,ID)'old) /= Get_Location(Get_Train(A_Train_List,ID)); -- Make sure location has changed
 
    function Get_Train_Index(A_Train_List : in Train_List; Index : in Natural)return Train with
