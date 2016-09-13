@@ -83,6 +83,16 @@ package body Train_Lists with SPARK_Mode => on is
 
    function Get_Train_Index(A_Train_List : in Train_List; Index : in Natural)return Train is (A_Train_List.Trains(Index));
 
+   function Space_Left(A_Train_List : in Train_List) Return Boolean is
+   begin
+      if not (A_Train_List.Count < Natural'Last) then return False; end if;
+
+      if not (A_Train_List.Count + 1 < A_Train_List.Trains'Last) then return False; end if;
+
+      if not (A_Train_List.Count >= Natural'First) then return False; end if;
+
+      return True;
+   end Space_Left;
 
 
 end Train_Lists;

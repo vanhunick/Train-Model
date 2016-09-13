@@ -47,7 +47,7 @@ package body Track_Lists with SPARK_Mode => on is
 
    function Contains_Track(A_Track_List : in Track_List; ID : in Natural)return Boolean is
    begin
---        if not Get_Count(A_Train_List) <= A_Train_List.Trains'Last then return False;
+--        if not Get_Count(A_Track_List) <= A_Track_List.Tracks'Last then return False;
 
       for I in 1.. Get_Count(A_Track_List) loop
          if  Get_ID(A_Track_List.Tracks(I)) = ID then
@@ -56,6 +56,17 @@ package body Track_Lists with SPARK_Mode => on is
       end loop;
       return False;
    end Contains_Track;
+
+   function Space_Left(A_Track_List : in Track_List) Return Boolean is
+   begin
+      if not (A_Track_List.Count < Natural'Last) then return False; end if;
+
+      if not (A_Track_List.Count + 1 < A_Track_List.Tracks'Last) then return False; end if;
+
+      if not (A_Track_List.Count >= Natural'First) then return False; end if;
+
+      return True;
+   end Space_Left;
 
 
 end Track_Lists;

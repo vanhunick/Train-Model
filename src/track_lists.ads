@@ -50,6 +50,13 @@ package Track_Lists with SPARK_Mode => on is
                   else
                 (for all I in A_Track_List.Tracks'Range => Get_ID(A_Track_List.Tracks(I)) /= ID));
 
+      -- Bounds Check function
+   function Space_Left(A_Track_List : in Track_List) Return Boolean
+     With Post => (if Space_Left'Result then
+          A_Track_List.Count < Natural'Last and then
+          A_Track_List.Count >= Natural'First and then
+          A_Track_List.Count + 1 < A_Track_List.Tracks'Last);
+
 
 --     private
 --     type Track_List is

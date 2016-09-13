@@ -83,9 +83,11 @@ package body Railways with SPARK_Mode => on is
    -- Adds a station to the model railway
    procedure Add_Station(A_Railway : in out Railway; A_Station : in Station) is
    begin
+
+
       -- First check if we can still fit more trains
       if Get_Count(A_Railway.All_Stations) < Get_Max(A_Railway.All_Stations) and then
-        not Valid_Station_ID(A_Railway, Get_ID(A_Station)) and then Get_Count(A_Railway.All_Stations) < Natural'Last then
+        not Valid_Station_ID(A_Railway, Get_ID(A_Station)) and then Space_Left(A_Railway.All_Stations) then
          Station_Lists.Add_Station(A_Railway.All_Stations, A_Station);
       end if;
    end Add_Station;
@@ -109,7 +111,7 @@ package body Railways with SPARK_Mode => on is
    begin
       -- First check if we can still fit more tracks
       if Get_Count(A_Railway.All_Trains) < Get_Max(A_Railway.All_Trains) and then
-        not Valid_Train_ID(A_Railway, Get_ID(A_Train)) then
+        not Valid_Train_ID(A_Railway, Get_ID(A_Train)) and then Space_Left(A_Railway.All_Trains) then
          Train_Lists.Add_Train(A_Railway.All_Trains, A_Train);
       end if;
    end Add_Train;
@@ -137,6 +139,8 @@ package body Railways with SPARK_Mode => on is
       Popped_Station : Station; -- The Station popped that is being processed
       Dest_Station : Natural; -- The ID of the destination of the track being processed
       Max_Index_Discovered : Natural; -- The max index in the array of discovered stations
+
+      Index : Natural;
    begin
       Discovered := (others => 0); -- Init with default values 0
 
@@ -144,8 +148,13 @@ package body Railways with SPARK_Mode => on is
       Stack_Height := 0; -- Init stack
       Max_Index_Discovered := 0; -- Init discovered index
 
-      Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station_Index(A_Railway.All_Stations,1); -- Put the first station on the stack
-      Stack_Height := Stack_Height + 1; -- Increment stack height
+      Index := Stack_Height + 1;
+
+      if (Index in Stack_Kinda'First..Stack_Kinda'Last) then
+         Stack_Kinda(Stack_Height + 1) := Station_Lists.Get_Station_Index(A_Railway.All_Stations,1); -- Put the first station on the stack
+         Stack_Height := Stack_Height + 1; -- Increment stack height
+      end if;
+
 
       while Stack_Height /= 0 -- Keep looping untill stack is empty
       loop

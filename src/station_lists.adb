@@ -89,5 +89,15 @@ package body Station_Lists with SPARK_Mode => on is
    end Contains_Station;
 
 
+   function Space_Left(A_Station_List : in Station_List) Return Boolean is
+   begin
+      if not (A_Station_List.Count < Natural'Last) then return False; end if;
+
+      if not (A_Station_List.Count + 1 < A_Station_List.Stations'Last) then return False; end if;
+
+      if not (A_Station_List.Count >= Natural'First) then return False; end if;
+
+      return True;
+   end Space_Left;
 
 end Station_Lists;
