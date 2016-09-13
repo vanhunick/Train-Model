@@ -3,20 +3,28 @@ with Text_IO; use Text_IO;
 
 package body Station_Lists with SPARK_Mode => on is
 
+
+   Defualt_Station : Station := Stations.Create(0);
+
    -- Creates and returns an empty Station list
    function Create return Station_List is
       New_List : Station_List;
    begin
          New_List.Count := 0;
-         New_List.Max := 100;
+      New_List.Max := 100;
+      New_List.Stations := (others => Defualt_Station);
          return New_List;
    end Create;
 
    -- Add a Station to the list
    procedure Add_Station(A_Station_List : in out Station_List; A_Station : in Station) is
    begin
-      A_Station_List.Stations(A_Station_List.Count+1) := A_Station;
-      A_Station_List.Count := A_Station_List.Count+1;
+      for I in 1..A_Station_List.Stations'Last  loop
+         if  Get_Count(A_Station_List) < Natural'Last and then I = Get_Count(A_Station_List) + 1 then
+            A_Station_List.Stations(I) := A_Station;
+            A_Station_List.Count := A_Station_List.Count + 1;
+         end if;
+      end loop;
    end Add_Station;
 
    -- Add an inbound track to the station
@@ -47,9 +55,9 @@ package body Station_Lists with SPARK_Mode => on is
    end Add_Outbound;
 
 
-   function Get_Count(A_Station_List : in Station_List)return Integer is (A_Station_List.Count);
+   function Get_Count(A_Station_List : in Station_List)return Natural is (A_Station_List.Count);
 
-   function Get_Max(A_Station_List : in Station_List)return Integer is (A_Station_List.Max);
+   function Get_Max(A_Station_List : in Station_List)return Natural is (A_Station_List.Max);
 
       function Get_Station(A_Station_List : in Station_List; ID : in Natural)return Station is
       begin

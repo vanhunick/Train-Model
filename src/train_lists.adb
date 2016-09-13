@@ -36,9 +36,9 @@ package body Train_Lists with SPARK_Mode => on is
 
 
 
-   function Get_Count(A_Train_List : in Train_List)return Integer is (A_Train_List.Count);
+   function Get_Count(A_Train_List : in Train_List)return Natural is (A_Train_List.Count);
 
-   function Get_Max(A_Train_List : in Train_List)return Integer is (A_Train_List.Max);
+   function Get_Max(A_Train_List : in Train_List)return Natural is (A_Train_List.Max);
 
    function Get_Train(A_Train_List : in Train_List; ID : in Natural)return Train is
       begin

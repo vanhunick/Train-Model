@@ -23,6 +23,7 @@ package body Railways with SPARK_Mode => on is
    -- Starts the simulation, from this poinst no more tracks can be added
    procedure Start(A_Railway : in out Railway) is
    begin
+
       if(Check_Reachability(A_Railway)) then
          A_Railway.Started := True;
       end if;
@@ -35,6 +36,8 @@ package body Railways with SPARK_Mode => on is
       A_Train : Train;
       Cur_Location_ID : Natural;
    begin
+      if not (Contains_Train(A_Railway.All_Trains, ID_Train))then return False; end if; -- Check for valid train ID
+
       A_Train := Train_Lists.Get_Train(A_Railway.All_Trains,ID_Train); -- Find the train we care about
 
       Cur_Location_ID := Get_Location(A_Train);
@@ -56,6 +59,8 @@ package body Railways with SPARK_Mode => on is
    -- Set Destination of a train the destination can only be the next location
    procedure Set_Destination(A_Railway : in out Railway; Train_ID : in Natural; Destination_ID : in Natural) is
    begin
+      if not Contains_Train(A_Railway.All_Trains,Train_ID) then return; end if;
+
       Set_Destination(A_Railway.All_Trains, Train_ID, Destination_ID);
    end Set_Destination;
 
@@ -63,7 +68,9 @@ package body Railways with SPARK_Mode => on is
    -- Check if the train with the ID passed in will collide with something if it moves to its destination
    function Check_Collision(A_Railway : in Railway; ID : in Natural)return Boolean is
       Destination : Natural; -- The ID of the destination of the train
-   begin
+      begin
+         if not Contains_Train(A_Railway.All_Trains, ID) Then return False; end if;
+
       Destination := Trains.Get_Destination(Train_Lists.Get_Train(A_Railway.All_Trains,ID)); -- Get the destination of the train from the train list
       if Train_Lists.On_Destination(A_Railway.All_Trains,Destination) then -- Checks if any trains are on the destination
          return True; -- There will be a collision
@@ -78,7 +85,7 @@ package body Railways with SPARK_Mode => on is
    begin
       -- First check if we can still fit more trains
       if Get_Count(A_Railway.All_Stations) < Get_Max(A_Railway.All_Stations) and then
-        not Valid_Station_ID(A_Railway, Get_ID(A_Station)) then
+        not Valid_Station_ID(A_Railway, Get_ID(A_Station)) and then Get_Count(A_Railway.All_Stations) < Natural'Last then
          Station_Lists.Add_Station(A_Railway.All_Stations, A_Station);
       end if;
    end Add_Station;
@@ -175,7 +182,11 @@ package body Railways with SPARK_Mode => on is
    -- Moves a train to its destination
    procedure Move_Train(A_Railway : in out Railway; ID : Natural) is
    begin
+      if not Get_Started(A_Railway) then return; end if;
+      if not Valid_Train_ID(A_Railway, ID) then return; end if;
+
       Train_Lists.Move_Train(A_Railway.All_Trains, ID);
+
    end Move_Train;
 
    -- Returns if the Train ID exists in the railway

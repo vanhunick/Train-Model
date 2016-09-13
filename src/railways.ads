@@ -20,7 +20,7 @@ package Railways with SPARK_Mode => on is
       end record;
 
    -- Array of found IDs for reachability
-   type Nat_Array is array (Positive range <>) of Natural;
+   type Nat_Array is array (Natural range <>) of Natural;
 
    -- Station stack
    type Station_Array is array (Positive range <>) of Station;
@@ -35,28 +35,42 @@ package Railways with SPARK_Mode => on is
 
    -- Starts the simulation, only if the railway is fully reachable
    procedure start(A_Railway : in out Railway) with
-     Pre => Get_Started(A_Railway) = False and then Check_Reachability(A_Railway) = True,
-     post => Get_Started(A_Railway) = True;
+     Post=> (if A_Railway.Started then A_Railway'old.Started or Check_Reachability(A_Railway'old));
 
 
    -- Moves a train to its current destination
    procedure Move_Train(A_Railway : in out Railway; ID : Natural)with
-     pre => Valid_Train_ID(A_Railway, ID) and then Get_Started(A_Railway) = True and then Check_Collision(A_Railway,ID);
+     Post => (if Get_Train(A_Railway'old.All_Trains,ID).Cur_Location_ID /= Get_Train(A_Railway.All_Trains,ID).Cur_Location_ID then
+                  not check_Collision(A_Railway'old,ID) and then Get_Started(A_Railway'old));
 
 
    -- Add station to the model railway
    procedure Add_Station(A_Railway : in out Railway; A_Station : in Station) with
-   pre => Valid_Station_ID(A_Railway, Get_ID(A_Station)) = False and then Get_Count(A_Railway.All_Stations) < Get_Max(A_Railway.All_Stations);
+     -- Check if the ID is valid and the count will not be more than can fit in the array
+     Post => (if (Valid_Station_ID(A_Railway'old, Get_ID(A_Station)) and then Get_Count(A_Railway'old.All_Stations) < Get_Max(A_Railway'old.All_Stations)) then
+                Get_Count(A_Railway'old.All_Stations) = Get_Count(A_Railway.All_Stations) + 1
+              and then Get_Station(A_Railway.All_Stations,A_Station.ID) = A_Station
+                  else
+                    A_Railway = A_Railway'old);
+
 
 
    -- Add track to the model railway
    procedure Add_Track(A_Railway : in out Railway; A_Track : in Track) with
-   pre => Valid_Track_ID(A_Railway, Get_ID(A_Track)) = False;
+     Post => (if (Valid_Track_ID(A_Railway'old, Get_ID(A_Track)) and then Get_Count(A_Railway'old.All_Tracks) < Get_Max(A_Railway'old.All_Tracks)) then
+                Get_Count(A_Railway'old.All_Tracks) = Get_Count(A_Railway.All_Tracks) + 1
+              and then Get_Track(A_Railway.All_Tracks,A_Track.ID) = A_Track
+                  else
+                    A_Railway = A_Railway'old);
 
 
    -- Adds a train to the Railway
    procedure Add_Train(A_Railway : in out Railway; A_Train : in Train) with
-   pre => Valid_Train_ID(A_Railway, Get_ID(A_Train)) = False;
+     Post => (if (Valid_Train_ID(A_Railway'old, Get_ID(A_Train)) and then Get_Count(A_Railway'old.All_Trains) < Get_Max(A_Railway'old.All_Trains)) then
+                Get_Count(A_Railway'old.All_Trains) = Get_Count(A_Railway.All_Trains) + 1
+              and then Get_Train(A_Railway.All_Trains,A_Train.ID) = A_Train
+                  else
+                    A_Railway = A_Railway'old);
 
 
    -- Updates the destination of the train
@@ -71,7 +85,11 @@ package Railways with SPARK_Mode => on is
 
 
    -- Helper function for Depth first search
-   function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean;
+   function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean with
+     post => (if not Contains_ID'Result then
+                (for all I in 1..Max_Index => IDs(I) /= ID)
+                  else
+                (for some I in 1..Max_Index => IDs(I) = ID));
 
 
    -- Checks if everything is still reachable after adding a track
@@ -84,7 +102,11 @@ package Railways with SPARK_Mode => on is
                   else
              ((for some I in 1..Get_Count(A_Railway.All_Trains) => Get_ID(Get_Train_Index(A_Railway.All_Trains,I)) = ID)));
 
-   function Valid_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
+   function Valid_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean with
+     Post => (if Valid_Station_ID'Result then Train_Lists.Contains_Train(A_Railway.All_Trains, ID)
+                  else
+                    not Train_Lists.Contains_Train(A_Railway.All_Trains, ID));
+
 
    function Valid_Track_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
 
@@ -103,7 +125,9 @@ package Railways with SPARK_Mode => on is
    -- ===========================================================
 
    -- Returns if the simulation has been started
-   function Get_Started(A_Railway : in Railway)return Boolean;
+   function Get_Started(A_Railway : in Railway)return Boolean with
+     Post => Get_Started'Result = A_Railway.Started;
+
 
 --  private
 --     type Railway is
