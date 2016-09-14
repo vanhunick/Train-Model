@@ -40,7 +40,7 @@ package Railways with SPARK_Mode => on is
 
    -- Moves a train to its current destination
    procedure Move_Train(A_Railway : in out Railway; ID : Natural)with
-     Post => (if Get_Train(A_Railway'old.All_Trains,ID).Cur_Location_ID /= Get_Train(A_Railway.All_Trains,ID).Cur_Location_ID then
+     Post =>(if Get_Train(A_Railway'old.All_Trains,ID).Cur_Location_ID /= Get_Train(A_Railway.All_Trains,ID).Cur_Location_ID then
                   not check_Collision(A_Railway'old,ID) and then Get_Started(A_Railway'old));
 
 

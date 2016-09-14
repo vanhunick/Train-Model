@@ -16,19 +16,25 @@ package body Train_Lists with SPARK_Mode => on is
 
    -- Add a Train to the list
    procedure Add_Train(A_Train_List : in out Train_List; A_Train : in Train) is
+      Index_Check : Natural;
    begin
-      for I in 1..A_Train_List.Trains'Last  loop
-         if  Get_Count(A_Train_List) < Natural'Last and then I = Get_Count(A_Train_List) + 1 then                  -- Here we have found the station to add the track to
-            A_Train_List.Trains(I) := A_Train;
+      if Get_Count(A_Train_List) < Natural'Last then -- Overflow Check
+         Index_Check := Get_Count(A_Train_List) + 1;
+
+         if Index_Check in 1..A_Train_List.Trains'Last then -- Index check
+            A_Train_List.Trains(Index_Check) := A_Train;
             A_Train_List.Count := A_Train_List.Count + 1;
          end if;
-      end loop;
+      end if;
    end Add_Train;
 
    procedure Set_Destination(A_Train_List : in out Train_List; Train_ID : in Natural; Destination_ID : in Natural) is
    begin
+      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return;  end if;
+
+
       for I in 1.. Get_Count(A_Train_List) loop
-         if  Get_ID(A_Train_List.Trains(I)) = Train_ID then                  -- Here we have found the station to add the track to
+         if  Get_ID(A_Train_List.Trains(I)) = Train_ID then                  -- Here we have found the Train to add the track to
             Trains.Set_Destination(A_Train_List.Trains(I),Destination_ID);
          end if;
       end loop;
@@ -41,9 +47,12 @@ package body Train_Lists with SPARK_Mode => on is
    function Get_Max(A_Train_List : in Train_List)return Natural is (A_Train_List.Max);
 
    function Get_Train(A_Train_List : in Train_List; ID : in Natural)return Train is
-      begin
+   begin
+      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return A_Train_List.Trains(1); end if; -- I know this is not ideal
+
+
       for I in 1.. Get_Count(A_Train_List) loop
-         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to
+         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the Train to add the track to
             return A_Train_List.Trains(I);
          end if;
       end loop;
@@ -53,8 +62,10 @@ package body Train_Lists with SPARK_Mode => on is
 
    function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean is
    begin
+      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return False; end if;
+
       for I in 1..Get_Count(A_Train_List) loop
-         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to
+         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the Train to add the track to
             return True;
          end if;
       end loop;
@@ -63,8 +74,10 @@ package body Train_Lists with SPARK_Mode => on is
 
    function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean is
    begin
+      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return False; end if;
+
       for I in 1.. Get_Count(A_Train_List) loop
-         if  Get_Location(A_Train_List.Trains(I)) = Dest_ID then                  -- Here we have found the station to add the track to
+         if  Get_Location(A_Train_List.Trains(I)) = Dest_ID then                  -- Here we have found the Train to add the track to
             return True;
          end if;
       end loop;
@@ -74,8 +87,11 @@ package body Train_Lists with SPARK_Mode => on is
 
    procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural) is
    begin
+      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return ; end if;
+
+
       for I in 1.. Get_Count(A_Train_List) loop
-         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the station to add the track to
+         if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the Train to add the track to
             Trains.Update_Location(A_Train_List.Trains(I));
          end if;
       end loop;

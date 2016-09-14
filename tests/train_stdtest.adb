@@ -394,7 +394,7 @@ package body Train_stdtest is
       Track_1_To_2 : Tracks.Track;
       Track_2_To_3 : Tracks.Track;
       Track_3_To_4 : Tracks.Track;
-      Track_4_To_5 : Tracks.Track;
+--        Track_4_To_5 : Tracks.Track;
 
    begin
       A_Railway := Create;
@@ -407,7 +407,6 @@ package body Train_stdtest is
       Track_1_To_2 := Create(5,2,1);
       Track_2_To_3 := Create(6,3,2);
       Track_3_To_4 := Create(7,4,3);
-      Track_4_To_5 := Create(8,5,4);
 
       Add_Station(A_Railway, Station_1);
       Add_Station(A_Railway, Station_2);
@@ -417,7 +416,6 @@ package body Train_stdtest is
       Add_Track(A_Railway,Track_1_To_2);
       Add_Track(A_Railway,Track_2_To_3);
       Add_Track(A_Railway,Track_3_To_4);
-      Add_Track(A_Railway,Track_4_To_5);
 
       Assert (Condition => (Railways.Check_Reachability(A_Railway)),
               Message => "The Railway Should be reachable");
@@ -688,7 +686,7 @@ package body Train_stdtest is
 
       Register_Routine (Test => T,Routine => Test_Complicated_Not_Reachable'Access, Name => "Test_Complicated_Not_Reachable");
 
-      Register_Routine (Test => T,Routine => Test_Complicated_Reachable'Access, Name => "Test_Complicated_Reachable");
+
 
       Register_Routine (Test => T,Routine => Test_Edge_Case_Reachable'Access, Name => "Test_Edge_Case_Reachable");
 
@@ -699,6 +697,10 @@ package body Train_stdtest is
       Register_Routine (Test => T,Routine => Test_Check_Valid_Destination_Other'Access, Name => "Test_Check_Valid_Destination_Other");
 
       Register_Routine (Test => T,Routine => Test_Check_Valid_Destination_Track'Access, Name => "Test_Check_Valid_Destination_Track");
+
+      Register_Routine (Test => T,Routine => Test_Complicated_Reachable'Access, Name => "Test_Complicated_Reachable");
+
+
 
    end Register_Tests;
 
