@@ -40,7 +40,7 @@ package Railways with SPARK_Mode => on is
    -- Moves a train to its current destination
    procedure Move_Train(A_Railway : in out Railway; ID : Natural)with
      Post => (if Contains_Train(A_Railway.All_Trains, ID) and then not check_Collision(A_Railway'old,ID) and then Get_Started(A_Railway'old) then
-        Get_Train(A_Railway.All_Trains,ID).Cur_Location_ID = Get_Train(A_Railway'old.All_Trains,ID).Destination);
+        		Get_Train(A_Railway.All_Trains,ID).Cur_Location_ID = Get_Train(A_Railway'old.All_Trains,ID).Destination);
 
 
 
@@ -73,9 +73,9 @@ package Railways with SPARK_Mode => on is
 
 
    -- Updates the destination of the train
-   procedure Set_Destination(A_Railway : in out Railway; Train_ID : in Natural; Destination_ID : in Natural) with
-     Post => (if Contains_Train(A_Railway'old.All_Trains, Train_ID) and then Check_Valid_Destination(A_Railway'old, Train_ID,Destination_ID) then -- Checks if the train exists that is had the new destination
-                               Get_Destination(Get_Train(A_Railway.All_Trains, Train_ID)) = Destination_ID );
+   procedure Set_Destination(A_Railway : in out Railway; Train_ID : in Natural; Destination_ID : in Natural);-- with
+--       Post => (if Contains_Train(A_Railway'old.All_Trains, Train_ID) and then Check_Valid_Destination(A_Railway'old, Train_ID,Destination_ID) then -- Checks if the train exists that is had the new destination
+--                                 Get_Destination(Get_Train(A_Railway.All_Trains, Train_ID)) = Destination_ID );
 
 
    -- ===========================================================

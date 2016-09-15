@@ -27,18 +27,15 @@ package body Stations with SPARK_Mode => on is
    procedure Add_Outbound(A_Station : in out Station; A_Track : in Track) is
    begin
       if Space_Left(A_Station.Out_Tracks) then
-         put_Line("Adding Track");
          Track_Lists.Add_Track(A_Station.Out_Tracks, A_Track);
       end if;
    end Add_Outbound;
-
 
    function Add_Inbound_Check(A_Station : in Station; A_Track : in Track)return Boolean is
    begin
       return not Track_Lists.Contains_Track(A_Station.In_Tracks, Get_ID(A_Track));
    end Add_Inbound_Check;
 
-   --
    function Add_Outbound_Check(A_Station : in Station; A_Track : in Track)return Boolean is
    begin
       return not Track_Lists.Contains_Track(A_Station.Out_Tracks, Get_ID(A_Track));
@@ -48,6 +45,5 @@ package body Stations with SPARK_Mode => on is
    begin
       return Track_Lists.Contains_Track(A_Station.Out_Tracks, Track_ID); -- If it contains the track it should be able to go to it
    end Go_To_Track;
-
 
 end Stations;

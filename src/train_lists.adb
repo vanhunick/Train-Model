@@ -29,7 +29,6 @@ package body Train_Lists with SPARK_Mode => on is
          if  Get_ID(A_Train_List.Trains(I)) = Train_ID then                  -- Here we have found the Train to add the track to
             Trains.Set_Destination(A_Train_List.Trains(I),Destination_ID);
          end if;
-         pragma Loop_Invariant(for all J in 1..I => Get_ID(A_Train_List.Trains(J)) /= Train_ID);
       end loop;
    end Set_Destination;
 

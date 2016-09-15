@@ -19,7 +19,6 @@ procedure Main with SPARK_Mode => on is
 
    Train_1 : Train;
 begin
-
       A_Railway := Create;
 
       Station_1 := Create(1);
@@ -33,8 +32,6 @@ begin
       Track_4_To_5 := Create(8,5,4);
 
       Train_1 := Create(1, 0); -- Station the train off the tracks and stations
-
-
 
       Add_Station(A_Railway, Station_1);
       Add_Station(A_Railway, Station_2);

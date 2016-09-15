@@ -3,8 +3,6 @@ with Text_IO; use Text_IO;
 
 package body Station_Lists with SPARK_Mode => on is
 
-
-
    -- Creates and returns an empty Station list
    function Create return Station_List is
       New_List : Station_List;
@@ -12,7 +10,7 @@ package body Station_Lists with SPARK_Mode => on is
       New_List.Count := 0;
       New_List.Max := 100;
       New_List.Stations := (others => Stations.Create(0));
-         return New_List;
+      return New_List;
    end Create;
 
    -- Add a Station to the list
@@ -45,7 +43,6 @@ package body Station_Lists with SPARK_Mode => on is
       Add_Inbound(A_Station_List, Get_Destination(A_Track), A_Track);
    end Add_Track;
 
-
    -- Add an outbound track to the station
    procedure Add_Outbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track) is
    begin
@@ -56,13 +53,12 @@ package body Station_Lists with SPARK_Mode => on is
       end loop;
    end Add_Outbound;
 
-
    function Get_Count(A_Station_List : in Station_List)return Natural is (A_Station_List.Count);
 
    function Get_Max(A_Station_List : in Station_List)return Natural is (A_Station_List.Max);
 
-      function Get_Station(A_Station_List : in Station_List; ID : in Natural)return Station is
-      begin
+   function Get_Station(A_Station_List : in Station_List; ID : in Natural)return Station is
+   begin
       for I in 1..A_Station_List.Stations'Last loop
          if  Get_ID(A_Station_List.Stations(I)) = ID then                  -- Here we have found the station to add the track to
             return A_Station_List.Stations(I);
@@ -78,9 +74,6 @@ package body Station_Lists with SPARK_Mode => on is
       return A_Station_List.Stations(Index);
    end Get_Station_Index;
 
-
-
-
    function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean is
    begin
       for I in 1..A_Station_List.Stations'Last loop
@@ -92,17 +85,12 @@ package body Station_Lists with SPARK_Mode => on is
       return False;
    end Contains_Station;
 
-
    function Space_Left(A_Station_List : in Station_List) Return Boolean is
    begin
       if not (A_Station_List.Count < Natural'Last) then return False; end if;
-
       if not (A_Station_List.Count + 1 < A_Station_List.Stations'Last) then return False; end if;
-
       if not  (A_Station_List.Count < A_Station_List.Max) then return False; end if;
-
       if not (A_Station_List.Count >= Natural'First) then return False; end if;
-
       return True;
    end Space_Left;
 
@@ -110,6 +98,5 @@ package body Station_Lists with SPARK_Mode => on is
    begin
       return Index in A_Station_List.Stations'First..A_Station_List.Stations'Last;
    end In_Range;
-
 
 end Station_Lists;

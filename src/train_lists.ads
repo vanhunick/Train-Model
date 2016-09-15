@@ -5,7 +5,7 @@ package Train_Lists with SPARK_Mode => on is
    -- The underlying array of Trains
    type Train_Array is array (Positive range 1..100) of Train; -- Change 100 to another number to increase number of possible trains
 
---     Type Train_List is private;
+   --     Type Train_List is private;
    type Train_List is
       record
          Count : Natural; -- The count of trains currently in the list
@@ -26,16 +26,16 @@ package Train_Lists with SPARK_Mode => on is
    procedure Add_Train(A_Train_List : in out Train_List; A_Train : in Train) with
      pre => Space_Left(A_Train_List), -- Check there is still place in the list
      post => (A_Train_List.Count = A_Train_List.Count'old + 1 and then -- The count should be incremented
-     A_Train_List.Count <= A_Train_List.Trains'Last and then  -- Check it has not gone over array
-   (A_Train_List.Trains(A_Train_List.Count) = A_Train)) or A_Train_List.Count = A_Train_List.Count'old; -- Check the train is in the array
+                A_Train_List.Count <= A_Train_List.Trains'Last and then  -- Check it has not gone over array
+                  (A_Train_List.Trains(A_Train_List.Count) = A_Train)) or A_Train_List.Count = A_Train_List.Count'old; -- Check the train is in the array
 
    -- Returns the count of the list
    function Get_Count(A_Train_List : in Train_List)return Natural with
-   Post => Get_Count'Result = A_Train_List.Count;
+     Post => Get_Count'Result = A_Train_List.Count;
 
    -- Returns the maximum number of elements that can be in the list
    function Get_Max(A_Train_List : in Train_List)return Natural with
-   Post => Get_Max'Result = A_Train_List.Max;
+     Post => Get_Max'Result = A_Train_List.Max;
 
    -- Returns the train with the given ID
    function Get_Train(A_Train_List : in Train_List; ID : in Natural)return Train with
@@ -45,9 +45,9 @@ package Train_Lists with SPARK_Mode => on is
    -- Returns if the list contains the train given by the ID
    function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean with
      Post => (if Contains_Train'Result then
-          (for some I in 1..A_Train_List.Trains'Last => Get_ID(A_Train_List.Trains(I)) = ID)
-             else
-        (for all I in 1..A_Train_List.Trains'Last => Get_ID(A_Train_List.Trains(I)) /= ID));
+                (for some I in 1..A_Train_List.Trains'Last => Get_ID(A_Train_List.Trains(I)) = ID)
+                  else
+                (for all I in 1..A_Train_List.Trains'Last => Get_ID(A_Train_List.Trains(I)) /= ID));
 
    -- Returns if a train is on a the destination with the id Dest_ID
    function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean;
@@ -65,15 +65,15 @@ package Train_Lists with SPARK_Mode => on is
    -- Bounds Check function
    function Space_Left(A_Train_List : in Train_List) Return Boolean
      With Post => (if Space_Left'Result then
-          A_Train_List.Count < Natural'Last and then
-          A_Train_List.Count >= Natural'First and then
-          A_Train_List.Count + 1 < A_Train_List.Trains'Last);
+                     A_Train_List.Count < Natural'Last and then
+                       A_Train_List.Count >= Natural'First and then
+                         A_Train_List.Count + 1 < A_Train_List.Trains'Last);
 
---     private
---     type Train_List is
---        record
---           Count : Integer;
---           Trains : Train_Array;
---           Max : Integer;
---        end record;
+   --     private
+   --     type Train_List is
+   --        record
+   --           Count : Integer;
+   --           Trains : Train_Array;
+   --           Max : Integer;
+   --        end record;
 end Train_Lists;
