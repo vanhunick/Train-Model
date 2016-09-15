@@ -22,7 +22,7 @@ package Trains with SPARK_Mode => on is
    -- ===========================================================
 
    procedure Update_Location(A_Train : in out Train) with
-     Post => Get_Location(A_Train) = Get_Destination(A_Train'old);
+     Post => A_Train.Cur_Location_ID = A_Train.Destination;
 
 
    procedure Set_Destination(A_Train : in out Train; ID : in Natural) with

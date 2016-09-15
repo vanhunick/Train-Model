@@ -19,6 +19,7 @@ package Train_Lists with SPARK_Mode => on is
      post => Get_Count(Create'Result) = 0
      and Create'Result.Max = 100;
 
+   -- Sets the destination of the train
    procedure Set_Destination(A_Train_List : in out Train_List; Train_ID : in Natural; Destination_ID : in Natural) with
      pre => Contains_Train(A_Train_List, Train_ID);
 
@@ -32,6 +33,8 @@ package Train_Lists with SPARK_Mode => on is
    function Get_Count(A_Train_List : in Train_List)return Natural with
    Post => Get_Count'Result = A_Train_List.Count;
 
+
+
    function Get_Max(A_Train_List : in Train_List)return Natural with
    Post => Get_Max'Result = A_Train_List.Max;
 
@@ -41,9 +44,9 @@ package Train_Lists with SPARK_Mode => on is
 
    function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean with
      Post => (if Contains_Train'Result then
-          (for some I in 1..Get_Count(A_Train_List) => Get_ID(A_Train_List.Trains(I)) = ID)
+          (for some I in 1..A_Train_List.Trains'Last => Get_ID(A_Train_List.Trains(I)) = ID)
              else
-        (for all I in 1..Get_Count(A_Train_List) => Get_ID(A_Train_List.Trains(I)) /= ID));
+        (for all I in 1..A_Train_List.Trains'Last => Get_ID(A_Train_List.Trains(I)) /= ID));
 
 
    function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean;-- with
@@ -51,7 +54,7 @@ package Train_Lists with SPARK_Mode => on is
 
    procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural) with
      pre => Contains_Train(A_Train_List,ID), -- There need to be a train that matched the id in the list
-     post => Get_Location(Get_Train(A_Train_List,ID)'old) /= Get_Location(Get_Train(A_Train_List,ID)); -- Make sure location has changed
+     post => (if Contains_Train(A_Train_List,ID) then Get_Location(Get_Train(A_Train_List,ID)) = Get_Destination(Get_Train(A_Train_List,ID))); -- Make sure location is the old destination
 
    function Get_Train_Index(A_Train_List : in Train_List; Index : in Natural)return Train with
      pre => Index <= Get_Count(A_Train_List) and then Get_Count(A_Train_List) < A_Train_List.Trains'Last and then Index /= 0,
@@ -64,8 +67,6 @@ package Train_Lists with SPARK_Mode => on is
           A_Train_List.Count < Natural'Last and then
           A_Train_List.Count >= Natural'First and then
           A_Train_List.Count + 1 < A_Train_List.Trains'Last);
-
-
 
 --     private
 --     type Train_List is

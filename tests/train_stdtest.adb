@@ -394,7 +394,7 @@ package body Train_stdtest is
       Track_1_To_2 : Tracks.Track;
       Track_2_To_3 : Tracks.Track;
       Track_3_To_4 : Tracks.Track;
---        Track_4_To_5 : Tracks.Track;
+      Track_4_To_1 : Tracks.Track;
 
    begin
       A_Railway := Create;
@@ -407,6 +407,8 @@ package body Train_stdtest is
       Track_1_To_2 := Create(5,2,1);
       Track_2_To_3 := Create(6,3,2);
       Track_3_To_4 := Create(7,4,3);
+      Track_4_To_1 := Create(8,1,4);
+
 
       Add_Station(A_Railway, Station_1);
       Add_Station(A_Railway, Station_2);
@@ -416,6 +418,8 @@ package body Train_stdtest is
       Add_Track(A_Railway,Track_1_To_2);
       Add_Track(A_Railway,Track_2_To_3);
       Add_Track(A_Railway,Track_3_To_4);
+      Add_Track(A_Railway,Track_4_To_1);
+
 
       Assert (Condition => (Railways.Check_Reachability(A_Railway)),
               Message => "The Railway Should be reachable");
@@ -541,7 +545,7 @@ package body Train_stdtest is
 
       A_Train : Train;
 
-      Track_To_1 : Tracks.Track;
+      Track_To_2 : Tracks.Track;
    begin
       A_Railway := Create;
 
@@ -550,12 +554,12 @@ package body Train_stdtest is
 
       A_Train := Create(1,1); -- Place on station 1
 
-      Track_To_1 := Create(3,2,1);
+      Track_To_2 := Create(3,2,1);
 
       Add_Station(A_Railway, Station_1);
       Add_Station(A_Railway, Station_2);
 
-      Add_Track(A_Railway, Track_To_1);
+      Add_Track(A_Railway, Track_To_2);
 
       Add_Train(A_Railway, A_Train);
 

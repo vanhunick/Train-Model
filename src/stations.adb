@@ -1,5 +1,6 @@
 with Tracks; use Tracks;
 with Track_Lists;
+with Text_IO; use Text_IO;
 
 package body Stations with SPARK_Mode => on is
 
@@ -18,12 +19,17 @@ package body Stations with SPARK_Mode => on is
 
    procedure Add_Inbound(A_Station : in out Station; A_Track : in Track) is
    begin
-      Track_Lists.Add_Track(A_Station.In_Tracks, A_Track);
+      if Space_Left(A_Station.In_Tracks) then
+         Track_Lists.Add_Track(A_Station.In_Tracks, A_Track);
+      end if;
    end Add_Inbound;
 
    procedure Add_Outbound(A_Station : in out Station; A_Track : in Track) is
    begin
-      Track_Lists.Add_Track(A_Station.Out_Tracks, A_Track);
+      if Space_Left(A_Station.Out_Tracks) then
+         put_Line("Adding Track");
+         Track_Lists.Add_Track(A_Station.Out_Tracks, A_Track);
+      end if;
    end Add_Outbound;
 
 
@@ -35,7 +41,7 @@ package body Stations with SPARK_Mode => on is
    --
    function Add_Outbound_Check(A_Station : in Station; A_Track : in Track)return Boolean is
    begin
-      return Track_Lists.Contains_Track(A_Station.Out_Tracks, Get_ID(A_Track)); -- ?????
+      return not Track_Lists.Contains_Track(A_Station.Out_Tracks, Get_ID(A_Track));
    end Add_Outbound_Check;
 
    function Go_To_Track(A_Station : in Station; Track_ID : in Natural)return Boolean is

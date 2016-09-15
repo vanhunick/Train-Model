@@ -23,7 +23,7 @@ package Station_Lists with SPARK_Mode => on is
 
    -- Add a Station to the list
    procedure Add_Station(A_Station_List : in out Station_List; A_Station : in Station) with
-     pre => A_Station_List.Count < Natural'Last  and then A_Station_List.Count + 1 <= A_Station_List.Stations'Last,
+     pre => Space_Left(A_Station_List),
      post => (A_Station_List.Count = A_Station_List.Count'old + 1 and then
                 A_Station_List.Count <= A_Station_List.Stations'Last and then  -- Make sure count less than the last array index
                   (A_Station_List.Stations(A_Station_List.Count) = A_Station)) or A_Station_List.Count = A_Station_List.Count'old; -- Check the Station is somewhere in the array
@@ -37,18 +37,23 @@ package Station_Lists with SPARK_Mode => on is
 
 
    function Get_Station(A_Station_List : in Station_List; ID : in Natural)return Station with
-     pre => Contains_Station(A_Station_List,ID), -- Get_Count(A_Station_List) < A_Station_List.Stations'Last and then
+     pre => Contains_Station(A_Station_List,ID),
      post => Get_ID(Get_Station'Result) = ID;
 
    function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean with
    Post => (if Contains_Station'Result then
-              (for some I in 1..Get_Count(A_Station_List) => Get_ID(A_Station_List.Stations(I)) = ID)
+              (for some I in 1..A_Station_List.Stations'Last => Get_ID(A_Station_List.Stations(I)) = ID)
             else
-              (for all I in 1..Get_Count(A_Station_List) => Get_ID(A_Station_List.Stations(I)) /= ID));
+              (for all I in 1..A_Station_List.Stations'Last => Get_ID(A_Station_List.Stations(I)) /= ID));
 
    function Get_Station_Index(A_Station_List : in Station_List; Index : in Natural)return Station with
-     pre => Index <= Get_Count(A_Station_List) and then Index /= 0,
+     pre => In_Range(A_Station_List, Index),
      post => Get_Station_Index'Result = A_Station_List.Stations(Index);
+
+   function In_Range(A_Station_List : in Station_List; Index : in Natural) return Boolean with
+        Post => (if In_Range'Result then Index in A_Station_List.Stations'First..A_Station_List.Stations'Last
+                          else
+                            (Index not in A_Station_List.Stations'First..A_Station_List.Stations'Last));
 
 
    procedure Add_Track(A_Station_List : in out Station_List; A_Track : Track);
@@ -61,9 +66,10 @@ package Station_Lists with SPARK_Mode => on is
       -- Bounds Check function
    function Space_Left(A_Station_List : in Station_List) Return Boolean
      With Post => (if Space_Left'Result then
-          A_Station_List.Count < Natural'Last and then
-          A_Station_List.Count >= Natural'First and then
-          A_Station_List.Count + 1 < A_Station_List.Stations'Last);
+                     A_Station_List.Count < Natural'Last and then
+                       A_Station_List.Count >= Natural'First and then
+                         A_Station_List.Count < A_Station_List.Max and then
+                           A_Station_List.Count + 1 < A_Station_List.Stations'Last);
 
 
    --     type Station_List is

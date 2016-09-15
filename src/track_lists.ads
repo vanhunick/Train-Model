@@ -22,10 +22,14 @@ package Track_Lists with SPARK_Mode => on is
 
    -- Add a track to the list
    procedure Add_Track(A_Track_List : in out Track_List; A_Track : in Track) with
-     pre => Get_Count(A_Track_List) < Get_Max(A_Track_List),
+     pre => Space_Left(A_Track_List),
      post => Get_Count(A_Track_List) - 1 = Get_Count(A_Track_List'old) and then
    (for some I in A_Track_List.Tracks'Range => A_Track_List.Tracks(I) = A_Track); -- Check the Track is somewhere in the array
 
+   function In_Range(A_Track_List : in Track_List; Index : in Natural) return Boolean with
+     Post => (if In_Range'Result then Index in A_Track_List.Tracks'First..A_Track_List.Tracks'Last
+                else
+                  (Index not in A_Track_List.Tracks'First..A_Track_List.Tracks'Last));
 
    function Get_Count(A_Track_List : in Track_List)return Natural with
       Post => Get_Count'Result = A_Track_List.Count;
@@ -38,13 +42,12 @@ package Track_Lists with SPARK_Mode => on is
      post => Get_ID(Get_Track'Result) = ID;
 
    function Get_Track_Index(A_Track_List : in  Track_List; Index : in Natural)return Track with
-     pre => Index <= Get_Count(A_Track_List) and then Index /= 0,
+     pre => In_Range(A_Track_List, Index),
      post => Get_Track_Index'Result = A_Track_List.Tracks(Index);
 
 
 
    function Contains_Track(A_Track_List : in Track_List; ID : in Natural)return Boolean with
---       pre => Get_Count(A_Track_List) < A_Track_List.Tracks'Last,
      Post => (if Contains_Track'Result then
                 (for some I in A_Track_List.Tracks'Range => Get_ID(A_Track_List.Tracks(I)) = ID)
                   else

@@ -7,7 +7,6 @@ with Stations; use Stations;
 
 package Railways with SPARK_Mode => on is
 
-
    --Type Railway is private;
 
    -- Public for pre and post conditions
@@ -40,18 +39,18 @@ package Railways with SPARK_Mode => on is
 
    -- Moves a train to its current destination
    procedure Move_Train(A_Railway : in out Railway; ID : Natural)with
-     Post =>(if Get_Train(A_Railway'old.All_Trains,ID).Cur_Location_ID /= Get_Train(A_Railway.All_Trains,ID).Cur_Location_ID then
-                  not check_Collision(A_Railway'old,ID) and then Get_Started(A_Railway'old));
+     Post => (if Contains_Train(A_Railway.All_Trains, ID) and then not check_Collision(A_Railway'old,ID) and then Get_Started(A_Railway'old) then
+        Get_Train(A_Railway.All_Trains,ID).Cur_Location_ID = Get_Train(A_Railway'old.All_Trains,ID).Destination);
+
 
 
    -- Add station to the model railway
    procedure Add_Station(A_Railway : in out Railway; A_Station : in Station) with
      -- Check if the ID is valid and the count will not be more than can fit in the array
-     Post => (if (Valid_Station_ID(A_Railway'old, Get_ID(A_Station)) and then Get_Count(A_Railway'old.All_Stations) < Get_Max(A_Railway'old.All_Stations)) then
-                Get_Count(A_Railway'old.All_Stations) = Get_Count(A_Railway.All_Stations) + 1
-              and then Get_Station(A_Railway.All_Stations,A_Station.ID) = A_Station
-                  else
-                    A_Railway = A_Railway'old);
+     Post => (if Space_Left(A_Railway'old.All_Stations) and  not Valid_Station_ID(A_Railway'old, A_Station.ID) then
+                  Contains_Station(A_Railway.All_Stations , A_Station.ID)
+                    else
+                      A_Railway = A_Railway'old);
 
 
 
@@ -75,7 +74,7 @@ package Railways with SPARK_Mode => on is
 
    -- Updates the destination of the train
    procedure Set_Destination(A_Railway : in out Railway; Train_ID : in Natural; Destination_ID : in Natural) with
-     Post => (if Valid_Train_ID(A_Railway, Train_ID) and then Check_Valid_Destination(A_Railway, Train_ID,Destination_ID) then -- Checks if the train exists that is had the new destination
+     Post => (if Contains_Train(A_Railway'old.All_Trains, Train_ID) and then Check_Valid_Destination(A_Railway'old, Train_ID,Destination_ID) then -- Checks if the train exists that is had the new destination
                                Get_Destination(Get_Train(A_Railway.All_Trains, Train_ID)) = Destination_ID );
 
 
@@ -85,11 +84,11 @@ package Railways with SPARK_Mode => on is
 
 
    -- Helper function for Depth first search
-   function Contains_ID(IDs : in Nat_Array; Max_Index : in Natural; ID : in Natural)return Boolean with
+   function Contains_ID(IDs : in Nat_Array; ID : in Natural)return Boolean with
      post => (if not Contains_ID'Result then
-                (for all I in 1..Max_Index => IDs(I) /= ID)
+                (for all I in 1..Nat_Array'Last => IDs(I) /= ID)
                   else
-                (for some I in 1..Max_Index => IDs(I) = ID));
+                (for some I in 1..Nat_Array'Last => IDs(I) = ID));
 
 
    -- Checks if everything is still reachable after adding a track
@@ -97,28 +96,28 @@ package Railways with SPARK_Mode => on is
 
    -- Returns if the passed in ID is allowed to be used
    function Valid_Train_ID(A_Railway : in Railway; ID : in Natural)return Boolean with
-     post => (if not Valid_Train_ID'Result then
-                (for all I in 1..Get_Count(A_Railway.All_Trains) => Get_ID(Get_Train_Index(A_Railway.All_Trains,I)) /= ID)
-                  else
-             ((for some I in 1..Get_Count(A_Railway.All_Trains) => Get_ID(Get_Train_Index(A_Railway.All_Trains,I)) = ID)));
+     Post => (if Valid_Train_ID'Result then
+                Contains_Train(A_Railway.All_Trains,ID));
 
    function Valid_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean with
-     Post => (if Valid_Station_ID'Result then Train_Lists.Contains_Train(A_Railway.All_Trains, ID)
-                  else
-                    not Train_Lists.Contains_Train(A_Railway.All_Trains, ID));
+          Post => (if Valid_Station_ID'Result then
+              Contains_Station(A_Railway.All_Stations,ID));
 
 
-   function Valid_Track_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
+   function Valid_Track_ID(A_Railway : in Railway; ID : in Natural)return Boolean with
+     Post => (if Valid_Track_ID'Result then
+              Contains_Track(A_Railway.All_Tracks,ID));
 
    function Check_Valid_Destination(A_Railway : in Railway; ID_Train : Natural; ID_Destination : in Natural)return Boolean;
 
    function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean;
 
    function Check_Collision(A_Railway : in Railway; ID : in Natural)return Boolean with
-     pre => Valid_Train_ID(A_Railway, ID);
+     pre => Contains_Train(A_Railway.All_Trains, ID);
 
    -- Returns
-   function Valid_Track_Or_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean;
+   function Valid_Track_Or_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean with
+   Post => (if Valid_Track_Or_Station_ID'Result then Valid_Track_ID(A_Railway,ID) or Valid_Station_ID(A_Railway,ID));
 
    -- ===========================================================
    --                 Get Functions

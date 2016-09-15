@@ -32,8 +32,8 @@ package body Station_Lists with SPARK_Mode => on is
    -- Add an inbound track to the station
    procedure Add_Inbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track) is
    begin
-      for I in 1.. Get_Count(A_Station_List) loop
-         if  Get_ID(A_Station_List.Stations(I)) = Station_ID then                  -- Here we have found the station to add the track to
+      for I in 1.. A_Station_List.Stations'Last loop
+         if  Get_ID(A_Station_List.Stations(I)) = Station_ID and then Add_Inbound_check(A_Station_List.Stations(I), A_Track) then                  -- Here we have found the station to add the track to
             Stations.Add_Inbound(A_Station_List.Stations(I), A_Track);
          end if;
       end loop;
@@ -49,8 +49,8 @@ package body Station_Lists with SPARK_Mode => on is
    -- Add an outbound track to the station
    procedure Add_Outbound(A_Station_List : in out Station_List; Station_ID : in Natural; A_Track : in Track) is
    begin
-      for I in 1.. Get_Count(A_Station_List) loop
-         if  Get_ID(A_Station_List.Stations(I)) = Station_ID then
+      for I in 1.. A_Station_List.Stations'Last loop
+         if  Get_ID(A_Station_List.Stations(I)) = Station_ID and then Add_Outbound_check(A_Station_List.Stations(I), A_Track) then
             Stations.Add_Outbound(A_Station_List.Stations(I), A_Track);
          end if;
       end loop;
@@ -63,10 +63,11 @@ package body Station_Lists with SPARK_Mode => on is
 
       function Get_Station(A_Station_List : in Station_List; ID : in Natural)return Station is
       begin
-      for I in 1.. Get_Count(A_Station_List) loop
+      for I in 1..A_Station_List.Stations'Last loop
          if  Get_ID(A_Station_List.Stations(I)) = ID then                  -- Here we have found the station to add the track to
             return A_Station_List.Stations(I);
          end if;
+         pragma Loop_Invariant(for all J in 1..I => Get_ID(A_Station_List.Stations(J)) /= ID);
       end loop;
       return A_Station_List.Stations(1); -- Should never get here
    end Get_Station;
@@ -82,10 +83,11 @@ package body Station_Lists with SPARK_Mode => on is
 
    function Contains_Station(A_Station_List : in Station_List; ID : Natural)return Boolean is
    begin
-      for I in 1.. Get_Count(A_Station_List) loop
+      for I in 1..A_Station_List.Stations'Last loop
          if  Get_ID(A_Station_List.Stations(I)) = ID then
             return True;
          end if;
+         pragma Loop_Invariant(for all J in 1..I => Get_ID(A_Station_List.Stations(J)) /= ID);
       end loop;
       return False;
    end Contains_Station;
@@ -97,9 +99,17 @@ package body Station_Lists with SPARK_Mode => on is
 
       if not (A_Station_List.Count + 1 < A_Station_List.Stations'Last) then return False; end if;
 
+      if not  (A_Station_List.Count < A_Station_List.Max) then return False; end if;
+
       if not (A_Station_List.Count >= Natural'First) then return False; end if;
 
       return True;
    end Space_Left;
+
+   function In_Range(A_Station_List : in Station_List; Index : in Natural) return Boolean is
+   begin
+      return Index in A_Station_List.Stations'First..A_Station_List.Stations'Last;
+   end In_Range;
+
 
 end Station_Lists;

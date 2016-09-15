@@ -30,13 +30,11 @@ package body Train_Lists with SPARK_Mode => on is
 
    procedure Set_Destination(A_Train_List : in out Train_List; Train_ID : in Natural; Destination_ID : in Natural) is
    begin
-      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return;  end if;
-
-
-      for I in 1.. Get_Count(A_Train_List) loop
+      for I in 1..A_Train_List.Trains'Last loop
          if  Get_ID(A_Train_List.Trains(I)) = Train_ID then                  -- Here we have found the Train to add the track to
             Trains.Set_Destination(A_Train_List.Trains(I),Destination_ID);
          end if;
+         pragma Loop_Invariant(for all J in 1..I => Get_ID(A_Train_List.Trains(J)) /= Train_ID);
       end loop;
    end Set_Destination;
 
@@ -48,13 +46,14 @@ package body Train_Lists with SPARK_Mode => on is
 
    function Get_Train(A_Train_List : in Train_List; ID : in Natural)return Train is
    begin
-      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return A_Train_List.Trains(1); end if; -- I know this is not ideal
+--        if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return A_Train_List.Trains(1); end if; -- I know this is not ideal
 
 
-      for I in 1.. Get_Count(A_Train_List) loop
+      for I in 1..A_Train_List.Trains'Last loop
          if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the Train to add the track to
             return A_Train_List.Trains(I);
          end if;
+         pragma Loop_Invariant(for all J in 1..I => Get_ID(A_Train_List.Trains(J)) /= ID);
       end loop;
       return A_Train_List.Trains(1); -- Should never get here
    end Get_Train;
@@ -62,13 +61,13 @@ package body Train_Lists with SPARK_Mode => on is
 
    function Contains_Train(A_Train_List : in Train_List; ID : in Natural)return Boolean is
    begin
-      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return False; end if;
-
-      for I in 1..Get_Count(A_Train_List) loop
+      for I in 1..A_Train_List.Trains'Last loop
          if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the Train to add the track to
             return True;
          end if;
+      pragma Loop_Invariant(for all J in 1..I => Get_ID(A_Train_List.Trains(J)) /= ID);
       end loop;
+
       return False;
    end Contains_Train;
 
@@ -87,13 +86,13 @@ package body Train_Lists with SPARK_Mode => on is
 
    procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural) is
    begin
-      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return ; end if;
 
-
-      for I in 1.. Get_Count(A_Train_List) loop
+      for I in 1..A_Train_List.Trains'Last loop
          if  Get_ID(A_Train_List.Trains(I)) = ID then                  -- Here we have found the Train to add the track to
             Trains.Update_Location(A_Train_List.Trains(I));
+            return;
          end if;
+        pragma Loop_Invariant(for all J in 1..I => Get_ID(A_Train_List.Trains(J)) /= ID);
       end loop;
    end Move_Train;
 
@@ -109,6 +108,7 @@ package body Train_Lists with SPARK_Mode => on is
 
       return True;
    end Space_Left;
+
 
 
 end Train_Lists;
