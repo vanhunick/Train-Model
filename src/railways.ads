@@ -113,7 +113,10 @@ package Railways with SPARK_Mode => on is
    function Check_Reachability_Node(A_Railway : in Railway; A_Station : in Station)return Boolean;
 
    function Check_Collision(A_Railway : in Railway; ID : in Natural)return Boolean with
-     pre => Contains_Train(A_Railway.All_Trains, ID);
+     pre => Contains_Train(A_Railway.All_Trains, ID),
+     Post => (if Check_Collision'Result then
+                (for some I in A_Railway.All_Trains.Trains'First..A_Railway.All_Trains.Trains'Last => A_Railway.All_Trains.Trains(I).Cur_Location_ID = Trains.Get_Destination(Train_Lists.Get_Train(A_Railway.All_Trains,ID)))
+             else (for all I in A_Railway.All_Trains.Trains'First..A_Railway.All_Trains.Trains'Last => A_Railway.All_Trains.Trains(I).Cur_Location_ID /= Trains.Get_Destination(Train_Lists.Get_Train(A_Railway.All_Trains,ID))));
 
    -- Returns
    function Valid_Track_Or_Station_ID(A_Railway : in Railway; ID : in Natural)return Boolean with

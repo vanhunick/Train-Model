@@ -59,6 +59,7 @@ package body Railways with SPARK_Mode => on is
       Destination : Natural; -- The ID of the destination of the train
    begin
       if not Contains_Train(A_Railway.All_Trains, ID) Then return False; end if;
+
       Destination := Trains.Get_Destination(Train_Lists.Get_Train(A_Railway.All_Trains,ID)); -- Get the destination of the train from the train list
       if Train_Lists.On_Destination(A_Railway.All_Trains,Destination) then -- Checks if any trains are on the destination
          return True; -- There will be a collision

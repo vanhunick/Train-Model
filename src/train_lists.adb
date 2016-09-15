@@ -57,12 +57,12 @@ package body Train_Lists with SPARK_Mode => on is
 
    function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean is
    begin
-      if not (Get_Count(A_Train_List) < A_Train_List.Trains'Last) then return False; end if;
 
-      for I in 1.. Get_Count(A_Train_List) loop
-         if  Get_Location(A_Train_List.Trains(I)) = Dest_ID then                  -- Here we have found the Train to add the track to
+      for I in 1..A_Train_List.Trains'Last loop
+         if  Get_Location(A_Train_List.Trains(I)) = Dest_ID then
             return True;
          end if;
+         pragma Loop_Invariant(for all J in 1..I => Get_Location(A_Train_List.Trains(J)) /= Dest_ID);
       end loop;
       return False;
    end On_Destination;

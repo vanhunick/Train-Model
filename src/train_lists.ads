@@ -50,7 +50,12 @@ package Train_Lists with SPARK_Mode => on is
                 (for all I in 1..A_Train_List.Trains'Last => Get_ID(A_Train_List.Trains(I)) /= ID));
 
    -- Returns if a train is on a the destination with the id Dest_ID
-   function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean;
+   function On_Destination(A_Train_List : in Train_List; Dest_ID : in Natural)return Boolean with
+     Post => (if On_Destination'Result then
+                (for some I in A_Train_List.Trains'First..A_Train_List.Trains'Last => A_Train_List.Trains(I).Cur_Location_ID = Dest_ID)
+                  else
+                    (for all I in A_Train_List.Trains'First..A_Train_List.Trains'Last => A_Train_List.Trains(I).Cur_Location_ID /= Dest_ID
+             ));
 
    -- Moves the train to its destination
    procedure Move_Train(A_Train_List : in out Train_List; ID : in Natural) with
